@@ -175,7 +175,7 @@ site/                  Project website (GitHub Pages)
 
 Issues and pull requests are welcome: <https://github.com/JD2005L/GithubActionsMonitor/issues>. Run `npm run check`
 before sending a change. GitHub Actions Monitor is free with nothing held back; if it saves you time, you can
-[sponsor its upkeep](https://github.com/sponsors/JD2005L).
+[chip in toward its upkeep](https://paypal.me/jlevac84).
 
 More by the author: [Inbox Pilot](https://jd2005l.github.io/InboxPilot/) (ask ChatGPT about your Gmail) and
 [GitHub Repo Navigator](https://jd2005l.github.io/GitHubRepoNavigator/).
