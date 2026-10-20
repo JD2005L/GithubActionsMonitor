@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Actions Monitor</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header class="topbar">
+      <h1><img src="icons/icon32.png" alt="" class="brand-icon"><span class="brand-name">GitHub Actions Monitor</span></h1>
+      <div class="top-actions">
+        <button id="refreshBtn" type="button" class="btn btn-refresh">
+          <span class="spinner" aria-hidden="true"></span>
+          <svg class="icon icon-refresh" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.61-3.89"/><path d="M13.5 2.5v3h-3"/></svg>
+          <span class="btn-label">Refresh Now</span>
+        </button>
+        <button id="dockBtn" type="button" class="btn btn-icon" title="Dock to the side panel: stays open while you browse" aria-label="Dock to the side panel" hidden>
+          <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M10 3v10"/></svg>
+        </button>
+        <button id="pinBtn" type="button" class="btn btn-icon" title="Keep on top: a small window that stays above your other windows" aria-label="Keep on top of other windows" hidden>
+          <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 2h4l-.5 4 2.5 2.5H4L6.5 6z"/><path d="M8 8.5V14"/></svg>
+        </button>
+        <button id="popoutBtn" type="button" class="btn btn-icon" title="Pop out into its own window" aria-label="Pop out into its own window" hidden>
+          <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9 2.5h4.5V7"/><path d="M13.5 2.5 8 8"/><path d="M12 9.5v3a1 1 0 0 1-1 1H3.5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3"/></svg>
+        </button>
+        <button id="settingsBtn" type="button" class="btn btn-icon" title="Open Settings" aria-label="Open Settings">
+          <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h7M13 4h1M2 8h2M8 8h6M2 12h8"/><circle cx="11" cy="4" r="1.75"/><circle cx="6" cy="8" r="1.75"/><circle cx="12" cy="12" r="1.75"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Rate limit banner -->
+    <div id="rateLimitBanner" class="banner hidden">
+      <span id="rateLimitMessage"></span>
+    </div>
+
+    <!-- The active tab is a GitHub repository that is not monitored yet -->
+    <div id="tabSuggestion" class="suggestion hidden">
+      <span class="suggestion-text">This tab: <strong id="tabRepoName"></strong></span>
+      <button id="tabAddBtn" type="button" class="btn btn-sm btn-primary">Add it</button>
+      <button id="tabDismissBtn" type="button" class="btn btn-ghost btn-icon-sm" title="Hide" aria-label="Hide this suggestion">
+        <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+      </button>
+    </div>
+
+    <!-- Summary (doubles as a filter), order, and the add form's toggle -->
+    <div class="list-toolbar">
+      <div id="filterChips" class="chips" role="group" aria-label="Show"></div>
+      <label class="sr-only" for="sortSelect">Sort</label>
+      <select id="sortSelect" class="select select-sm" title="Order of the list">
+        <option value="custom">Custom order</option>
+        <option value="name">Name</option>
+        <option value="recent">Recent activity</option>
+        <option value="status">Status</option>
+      </select>
+      <button id="addToggle" type="button" class="btn btn-sm btn-add" aria-expanded="false" aria-controls="addPanel" aria-label="Add a repository">
+        <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>Add
+      </button>
+    </div>
+
+    <!-- Repository management: collapsed until needed -->
+    <section id="addPanel" class="add-panel" aria-label="Add a repository" hidden>
+      <div class="repo-controls">
+        <div class="field autocomplete-wrapper">
+          <label for="ownerInput">Owner</label>
+          <input
+            type="text"
+            id="ownerInput"
+            class="input"
+            placeholder="user or organization"
+            autocomplete="off"
+            spellcheck="false"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            aria-controls="ownerSuggestions"
+          >
+          <div id="ownerSuggestions" class="autocomplete-suggestions hidden" role="listbox" aria-label="Remembered owners"></div>
+        </div>
+        <div class="field field-wide">
+          <label for="repoSelect">Repository <span id="repoCount" class="field-count"></span></label>
+          <select id="repoSelect" class="select" disabled>
+            <option value="">Enter an owner first</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="branchSelect">Branch</label>
+          <select id="branchSelect" class="select" disabled>
+            <option value="">Select branch...</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button id="addRepoBtn" type="button" class="btn btn-primary" disabled>Add Repo</button>
+        </div>
+      </div>
+      <div id="branchStatus" class="status-text"></div>
+    </section>
+
+    <div id="repoList" class="repo-list"></div>
+
+    <footer class="popup-footer">
+      <span id="listCount"></span>
+      <span id="checkedAt"></span>
+    </footer>
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+    <div id="orderAnnouncer" class="sr-only" aria-live="polite"></div>
+  </div>
+
+  <script src="storage-manager.js"></script>
+  <script src="github-api.js"></script>
+  <script src="repo-order.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

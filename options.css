@@ -1,0 +1,1004 @@
+/* Options page styles for GitHub Actions Monitor */
+
+/* Theme: GitHub's light palette by default, its dark palette when the browser or OS is in dark mode. */
+:root {
+  color-scheme: light dark;
+  --fg: #24292f;
+  --fg-muted: #57606a;
+  --fg-subtle: #6e7781;
+  --bg: #ffffff;
+  --bg-subtle: #f6f8fa;
+  --bg-hover: #f3f4f6;
+  --bg-active: #e5e7eb;
+  --border: #d0d7de;
+  --border-strong: #b8bfc6;
+  --accent: #0969da;
+  --accent-strong: #0550ae;
+  --focus-ring: rgba(9, 105, 218, 0.15);
+  --success-fg: #1a7f37;
+  --danger-fg: #cf222e;
+  --warning-fg: #9a6700;
+  --attention-bg: #fff8c5;
+  --attention-border: #d4a72c;
+  --attention-fg: #7d4e00;
+  --info-bg: #ddf4ff;
+  --info-border: #54aeff;
+  --shadow: rgba(140, 149, 159, 0.2);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #e6edf3;
+    --fg-muted: #9198a1;
+    --fg-subtle: #7d8590;
+    --bg: #0d1117;
+    --bg-subtle: #151b23;
+    --bg-hover: #1f2630;
+    --bg-active: #262c36;
+    --border: #3d444d;
+    --border-strong: #656c76;
+    --accent: #4493f8;
+    --accent-strong: #79b8ff;
+    --focus-ring: rgba(68, 147, 248, 0.3);
+    --success-fg: #3fb950;
+    --danger-fg: #f85149;
+    --warning-fg: #d29922;
+    --attention-bg: rgba(187, 128, 9, 0.15);
+    --attention-border: rgba(187, 128, 9, 0.4);
+    --attention-fg: #d29922;
+    --info-bg: rgba(56, 139, 253, 0.1);
+    --info-border: rgba(56, 139, 253, 0.4);
+    --shadow: rgba(1, 4, 9, 0.6);
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 14px;
+  color: var(--fg);
+  background-color: var(--bg-subtle);
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+header {
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--border);
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 8px;
+}
+
+.settings-section {
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.description {
+  color: var(--fg-muted);
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.description code {
+  background-color: var(--bg-subtle);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  font-size: 13px;
+}
+
+/* Token controls */
+.token-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.token-controls input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+}
+
+.token-controls input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.button-group {
+  display: flex;
+  gap: 8px;
+}
+
+/* Sync Option */
+.sync-option {
+  margin-top: 16px;
+  padding: 16px;
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--fg);
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.checkbox-label span {
+  user-select: none;
+}
+
+.sync-description {
+  margin-top: 12px;
+  margin-left: 28px;
+  font-size: 13px;
+  color: var(--fg-muted);
+  line-height: 1.6;
+}
+
+.sync-option ul {
+  margin-left: 48px;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  list-style-type: disc;
+}
+
+.sync-option li {
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--fg-muted);
+  line-height: 1.5;
+}
+
+/* Interval controls */
+.interval-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.interval-select {
+  flex: 1;
+  max-width: 300px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: var(--bg);
+  cursor: pointer;
+}
+
+.interval-select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+/* Buttons */
+.btn {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: var(--bg-subtle);
+  color: var(--fg);
+  transition: background-color 0.15s;
+}
+
+.btn:hover {
+  background-color: var(--bg-hover);
+}
+
+.btn:active {
+  background-color: var(--bg-active);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: #2da44e;
+  color: #ffffff;
+  border-color: rgba(27, 31, 36, 0.15);
+}
+
+.btn-primary:hover {
+  background-color: #2c974b;
+}
+
+.btn-primary:active {
+  background-color: #298e46;
+}
+
+.btn-secondary {
+  background-color: var(--bg-subtle);
+  color: var(--fg);
+}
+
+/* Status text */
+.status-text {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+.status-text.success {
+  color: var(--success-fg);
+}
+
+.status-text.error {
+  color: var(--danger-fg);
+}
+
+.status-text.warning {
+  color: var(--warning-fg);
+}
+
+/* Help text */
+.help-text {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+.help-text a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.help-text a:hover {
+  text-decoration: underline;
+}
+
+/* Info box */
+.info-box {
+  margin-top: 16px;
+  padding: 16px;
+  background-color: var(--info-bg);
+  border: 1px solid var(--info-border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.info-box strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--accent-strong);
+}
+
+.info-box ul {
+  margin-left: 20px;
+  margin-top: 8px;
+}
+
+.info-box li {
+  margin-bottom: 4px;
+}
+
+/* Rate limit info */
+.rate-limit-info {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px;
+  background-color: var(--bg-subtle);
+  margin-bottom: 12px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row .label {
+  font-weight: 500;
+  color: var(--fg);
+}
+
+.info-row .value {
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* How It Works Section */
+.how-it-works {
+  background-color: var(--bg-subtle);
+  border: 2px solid var(--accent);
+}
+
+.how-it-works h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.how-it-works h3:first-of-type {
+  margin-top: 16px;
+}
+
+.how-it-works h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 8px;
+}
+
+/* Color Legend */
+.color-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.color-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.color-dot {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: 50%;
+  margin-top: 2px;
+}
+
+.color-dot.color-green {
+  background-color: #2da44e;
+}
+
+.color-dot.color-yellow {
+  background-color: #fbbf24;
+}
+
+.color-dot.color-red {
+  background-color: #ef4444;
+}
+
+.color-dot.color-gray {
+  background-color: #9ca3af;
+}
+
+.color-item strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 2px;
+  color: var(--fg);
+}
+
+.color-item p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin: 0;
+}
+
+/* Polling Explanation */
+.polling-explanation {
+  margin-top: 12px;
+  display: grid;
+  gap: 16px;
+}
+
+.polling-mode {
+  padding: 16px;
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.polling-mode p {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--fg);
+}
+
+.polling-mode ul {
+  margin-left: 20px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.polling-mode li {
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+.highlight {
+  padding: 12px;
+  background-color: var(--attention-bg);
+  border-left: 3px solid #fbbf24;
+  border-radius: 4px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--fg);
+}
+
+/* Read-only token steps and token check */
+.token-steps {
+  margin: 0 0 16px 20px;
+  display: grid;
+  gap: 10px;
+  color: var(--fg);
+}
+
+.token-steps li {
+  padding-left: 4px;
+}
+
+.step-note {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+a.btn {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.token-report {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-left-width: 4px;
+  border-radius: 6px;
+  background-color: var(--bg-subtle);
+  font-size: 13px;
+  color: var(--fg);
+  display: grid;
+  gap: 4px;
+}
+
+.token-report.good {
+  border-left-color: #2da44e;
+}
+
+.token-report.warn {
+  border-left-color: #d4a72c;
+}
+
+.token-report.bad {
+  border-left-color: #ef4444;
+}
+
+.help-text code,
+.step-note code {
+  background-color: var(--bg-subtle);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+}
+
+/* Brand icon in the header */
+h1 { display: flex; align-items: center; gap: 12px; }
+.brand-icon { width: 36px; height: 36px; }
+h1 .subtitle { font-weight: 400; color: var(--fg-muted); }
+
+/* Tabs (the same pattern as GitHub Repo Navigator's settings) */
+header {
+  margin-bottom: 20px;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin: 0 0 24px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs [role="tab"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  margin-bottom: -1px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--fg-muted);
+  font: inherit;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tabs [role="tab"]:hover {
+  color: var(--fg);
+  border-bottom-color: var(--border);
+}
+
+.tabs [role="tab"][aria-selected="true"] {
+  color: var(--fg);
+  font-weight: 600;
+  border-bottom-color: var(--accent);
+}
+
+.tabs [role="tab"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.tabs .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.tabs .dot.hidden {
+  display: none;
+}
+
+.tab-panel[hidden] {
+  display: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+ol.getting-started {
+  padding-left: 20px;
+  line-height: 1.8;
+}
+
+/* Themed controls: the same look as the popup instead of the browser's defaults */
+:root {
+  --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 6l3.5 3.5L11.5 6' fill='none' stroke='%2357606a' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --btn-bg: #f6f8fa;
+  --btn-hover: #eef1f4;
+  --primary-bg: #1f883d;
+  --primary-hover: #1a7f37;
+  --accent-subtle: #ddf4ff;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 6l3.5 3.5L11.5 6' fill='none' stroke='%239198a1' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    --btn-bg: #212830;
+    --btn-hover: #2a313c;
+    --primary-bg: #238636;
+    --primary-hover: #29903b;
+    --accent-subtle: rgba(56, 139, 253, 0.15);
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  background-color: var(--btn-bg);
+  transition: background-color 0.12s, border-color 0.12s;
+}
+
+.btn:hover {
+  background-color: var(--btn-hover);
+  border-color: var(--border-strong);
+}
+
+.btn:focus-visible,
+.step-link:focus-visible,
+.choice input:focus-visible,
+.checkbox-label input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btn-primary,
+.btn-primary:active {
+  color: #ffffff;
+  background-color: var(--primary-bg);
+  border-color: rgba(31, 35, 40, 0.15);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: rgba(31, 35, 40, 0.15);
+}
+
+.btn-secondary {
+  background-color: var(--btn-bg);
+}
+
+.interval-select {
+  appearance: none;
+  height: 34px;
+  padding: 0 34px 0 12px;
+  color: var(--fg);
+  font: inherit;
+  font-size: 13px;
+  background-image: var(--chevron);
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
+}
+
+.interval-select:hover {
+  border-color: var(--border-strong);
+}
+
+.token-controls input:hover {
+  border-color: var(--border-strong);
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--primary-bg);
+}
+
+/* Setup steps */
+.stepper ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.step-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--fg-muted);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.12s, background-color 0.12s;
+}
+
+.step-link:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-subtle);
+}
+
+.step-link.is-current {
+  border-color: var(--accent);
+  background: var(--accent-subtle);
+  color: var(--fg);
+}
+
+.step-num {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.step-link.is-current .step-num {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.step-link.is-done .step-num {
+  border-color: var(--success-fg);
+  color: var(--success-fg);
+}
+
+.step-text {
+  display: grid;
+  min-width: 0;
+}
+
+.step-text strong {
+  font-size: 13px;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.step-sub {
+  font-size: 12px;
+  color: var(--fg-subtle);
+}
+
+.setup-step h2:focus {
+  outline: none;
+}
+
+.optional {
+  margin-left: 8px;
+  padding: 1px 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--fg-muted);
+  vertical-align: middle;
+}
+
+.step-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: -8px 0 24px;
+}
+
+.step-hint {
+  flex: 1;
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+.step-nav #stepNext {
+  margin-left: auto;
+}
+
+fieldset.choices {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+}
+
+fieldset.choices legend {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+label.choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+label.choice:hover {
+  border-color: var(--border-strong);
+}
+
+label.choice:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+label.choice input {
+  margin-top: 3px;
+}
+
+label.choice span {
+  display: grid;
+  gap: 2px;
+}
+
+label.choice small {
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+
+.token-upgrade {
+  margin: 14px 0 0;
+}
+
+/* The saved token: a status card, so a finished step reads as finished */
+.token-connected {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 18px;
+  background: var(--bg-subtle);
+}
+
+.tc-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tc-badge {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--fg-muted);
+}
+
+.token-connected.good .tc-badge { background: #2da44e; }
+.token-connected.warn .tc-badge { background: #d4a72c; color: #1f2328; }
+.token-connected.bad .tc-badge { background: #cf222e; }
+
+.tc-title {
+  display: block;
+  font-size: 15px;
+}
+
+.tc-sub {
+  display: block;
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+
+.tc-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px 16px;
+  margin: 14px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--border);
+}
+
+.tc-facts dt {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--fg-muted);
+}
+
+.tc-facts dd {
+  margin: 2px 0 0;
+  font-size: 13px;
+}
+
+.tc-facts dd.ok { color: var(--success-fg); }
+.tc-facts dd.warn { color: var(--warning-fg); }
+.tc-facts dd.muted { color: var(--fg-muted); }
+
+.tc-warning {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--warning-fg);
+}
+
+.token-connected .button-group {
+  margin-top: 14px;
+}
+
+#tokenConnected:not([hidden]) + #tokenSetup:not([hidden]) {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--border);
+}
+
+.token-upgrade p {
+  margin: 6px 0;
+}
+
+.token-upgrade .token-steps {
+  margin: 10px 0 6px 20px;
+}
+
+.token-upgrade li strong,
+.token-upgrade p strong {
+  display: inline;
+  margin: 0;
+  color: inherit;
+}
+
+.token-upgrade a.btn {
+  text-decoration: none;
+}
+
+
+
+/* A group after a checkbox (re-run and cancel after notifications) needs the same breathing room as one after a group. */
+.checkbox-label + fieldset.choices {
+  margin-top: 20px;
+}
+
+fieldset.choices .help-text {
+  margin: 4px 0 0 28px;
+}
+
+.step-callout {
+  margin: 8px 0 0 28px;
+  padding: 8px 12px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-subtle);
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+@media (max-width: 640px) {
+  .stepper ol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The hidden attribute wins over any display set above (buttons and sections are flex or grid). */
+[hidden] {
+  display: none !important;
+}
+
+a.btn {
+  display: inline-flex;
+}

@@ -1,0 +1,19 @@
+{
+  "name": "github-actions-monitor",
+  "private": true,
+  "license": "GPL-3.0-only",
+  "description": "Development tooling for the GitHub Actions Monitor Chrome extension (the extension itself has no dependencies).",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "icons": "node scripts/icons.mjs",
+    "test": "node --test \"tests/unit/*.test.mjs\"",
+    "test:e2e": "node scripts/build.mjs && playwright test",
+    "check": "npm test && npm run test:e2e",
+    "package": "node scripts/build.mjs --store && node scripts/store-assets.mjs && npm run package:screenshots",
+    "package:screenshots": "node scripts/build.mjs && playwright test -c playwright.store.config.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1"
+  }
+}

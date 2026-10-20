@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Actions Monitor - Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><img src="icons/icon48.png" alt="" class="brand-icon">GitHub Actions Monitor <span class="subtitle">Settings</span></h1>
+    </header>
+
+    <div class="tabs" role="tablist" aria-label="Settings">
+      <button type="button" role="tab" id="tab-setup" aria-controls="panel-setup" aria-selected="true">Setup<span id="setupDot" class="dot hidden" title="No token yet"><span class="sr-only"> (no token yet)</span></span></button>
+      <button type="button" role="tab" id="tab-monitoring" aria-controls="panel-monitoring" aria-selected="false" tabindex="-1">Monitoring</button>
+      <button type="button" role="tab" id="tab-usage" aria-controls="panel-usage" aria-selected="false" tabindex="-1">API usage</button>
+      <button type="button" role="tab" id="tab-guide" aria-controls="panel-guide" aria-selected="false" tabindex="-1">How it works</button>
+    </div>
+
+    <div class="tab-panel" role="tabpanel" id="panel-setup" aria-labelledby="tab-setup">
+    <!-- Setup steps: the token is required; the badge, alerts and run controls are optional and can be changed later -->
+    <nav class="stepper" aria-label="Setup steps">
+      <ol>
+        <li><button type="button" class="step-link" data-step="features"><span class="step-num" aria-hidden="true">1</span><span class="step-text"><strong>Choose features</strong><span class="step-sub">Optional</span></span></button></li>
+        <li><button type="button" class="step-link" data-step="token"><span class="step-num" aria-hidden="true">2</span><span class="step-text"><strong>Connect GitHub</strong><span class="step-sub">Required</span></span></button></li>
+        <li><button type="button" class="step-link" data-step="repos"><span class="step-num" aria-hidden="true">3</span><span class="step-text"><strong>Add repositories</strong><span class="step-sub">In the popup</span></span></button></li>
+      </ol>
+    </nav>
+
+    <!-- Step 1: features, chosen first so the token is created with the right permission -->
+    <section class="settings-section setup-step" data-step="features">
+      <h2>Choose features <span class="optional">Optional</span></h2>
+      <p class="description">
+        Pick these first: re-run and cancel decide which token the next step creates, so you only make one.
+        Everything here can be changed later on the Monitoring tab.
+      </p>
+      <fieldset class="choices">
+        <legend>Number on the toolbar icon</legend>
+        <label class="choice"><input type="radio" name="badgeModeSetup" value="both" data-pref="badgeMode"><span><strong>Failing, else running</strong><small>A red number for failing repositories; when nothing fails, an amber number for running ones.</small></span></label>
+        <label class="choice"><input type="radio" name="badgeModeSetup" value="failing" data-pref="badgeMode"><span><strong>Failing only</strong><small>A number only when something fails.</small></span></label>
+        <label class="choice"><input type="radio" name="badgeModeSetup" value="off" data-pref="badgeMode"><span><strong>No number</strong><small>Only the icon's color.</small></span></label>
+      </fieldset>
+      <label class="checkbox-label">
+        <input type="checkbox" data-pref="notificationsEnabled">
+        <span>Desktop notifications when a workflow starts, succeeds or fails (a failure names the failed step)</span>
+      </label>
+      <fieldset class="choices">
+        <legend>Re-run and cancel</legend>
+        <label class="checkbox-label">
+          <input type="checkbox" data-pref="runControls">
+          <span>Show re-run and cancel buttons in the popup</span>
+        </label>
+        <p class="help-text">
+          Off keeps the extension read-only. On, expanded cards get a <strong>re-run failed jobs</strong> button on failed
+          workflows and a <strong>cancel</strong> button on running ones, and the token needs
+          <strong>Actions: Read and write</strong>.
+        </p>
+        <p id="runControlsHint" class="step-callout" data-shown-by="runControls" hidden></p>
+      </fieldset>
+    </section>
+
+    <!-- Step 2: GitHub token -->
+    <section class="settings-section setup-step" data-step="token" hidden>
+      <h2>GitHub Personal Access Token</h2>
+
+      <!-- With a token saved: what it is and what it can do, instead of the instructions for making one -->
+      <div id="tokenConnected" class="token-connected" hidden>
+        <div class="tc-head">
+          <span id="tcBadge" class="tc-badge" aria-hidden="true"></span>
+          <div>
+            <strong id="tcTitle" class="tc-title" aria-live="polite"></strong>
+            <span id="tcSub" class="tc-sub"></span>
+          </div>
+        </div>
+        <dl class="tc-facts">
+          <div><dt>Token</dt><dd id="tcKind"></dd></div>
+          <div><dt>Repositories</dt><dd id="tcRepos"></dd></div>
+          <div><dt>API requests</dt><dd id="tcRate"></dd></div>
+          <div><dt>Re-run and cancel</dt><dd id="tcAccess"></dd></div>
+        </dl>
+        <p id="tcWarning" class="tc-warning" hidden></p>
+        <div id="tokenUpgrade" class="info-box token-upgrade" hidden>
+          <strong>Re-run and cancel need one more permission on this token.</strong>
+          <p data-kind="fine-grained">Add it to the same token on GitHub. The token's value does not change, so there is nothing to paste here again.</p>
+          <ol class="token-steps" data-kind="fine-grained">
+            <li>
+              <a class="btn btn-secondary" target="_blank" rel="noopener noreferrer" href="https://github.com/settings/personal-access-tokens">Open your tokens on GitHub</a>
+            </li>
+            <li>Click the token you use here (<strong>GitHub Actions Monitor</strong> if you made it from this page), then <strong>Edit</strong>.</li>
+            <li>Under <strong>Permissions</strong>, <strong>Repository permissions</strong>, set <strong>Actions</strong> to <strong>Read and write</strong>, then click <strong>Update</strong>.</li>
+          </ol>
+          <p data-kind="classic">Your saved token is a classic token: re-run and cancel work if it has the <code>repo</code> scope (<code>public_repo</code> covers public repositories only). <a target="_blank" rel="noopener noreferrer" href="https://github.com/settings/tokens">Check its scopes on GitHub</a>.</p>
+          <p class="help-text">Then click <strong>Check again</strong> below.</p>
+        </div>
+        <div class="button-group">
+          <button id="checkTokenBtn" class="btn btn-secondary">Check again</button>
+          <button id="replaceTokenBtn" class="btn btn-secondary">Replace token</button>
+          <button id="clearTokenBtn" class="btn btn-secondary">Remove token</button>
+        </div>
+      </div>
+
+      <div id="tokenSetup">
+        <p id="tokenIntro" class="description">
+          The extension only needs to <strong>read</strong> workflow runs. Use a fine-grained token with read-only access:
+          it cannot change anything on GitHub, even if it leaked.
+        </p>
+
+        <ol class="token-steps">
+          <li>
+            <a id="createTokenLink" class="btn btn-primary" target="_blank" rel="noopener noreferrer"
+               href="https://github.com/settings/personal-access-tokens/new?name=GitHub%20Actions%20Monitor&amp;description=Read-only%20access%20to%20workflow%20runs%20for%20the%20GitHub%20Actions%20Monitor%20Chrome%20extension&amp;expires_in=90&amp;actions=read">Create a read-only token on GitHub</a>
+            <span id="createTokenNote" class="step-note">Opens GitHub's form with the name, a 90-day expiry and <strong>Actions: Read-only</strong> already set (Metadata: Read-only is added automatically).</span>
+          </li>
+          <li>Under <strong>Repository access</strong>, choose <strong>All repositories</strong> (or only the ones you want to monitor). For an organization's repositories, pick it as the <strong>Resource owner</strong>; some organizations must approve tokens first.</li>
+          <li>Click <strong>Generate token</strong>, copy it, paste it below and click <strong>Save Token</strong>. The extension checks it right away.</li>
+        </ol>
+        <div class="token-controls">
+          <input
+            type="password"
+            id="tokenInput"
+            placeholder="github_pat_..."
+            autocomplete="off"
+          >
+          <div class="button-group">
+            <button id="saveTokenBtn" class="btn btn-primary">Save Token</button>
+            <button id="testTokenBtn" class="btn btn-secondary">Test Token</button>
+            <button id="cancelReplaceBtn" class="btn btn-secondary" hidden>Keep the current token</button>
+          </div>
+        </div>
+        <div id="tokenReport" class="token-report hidden" aria-live="polite"></div>
+        <p class="help-text">
+          A classic token also works (it needs the <code>repo</code> scope for private repositories), but that scope
+          grants full read and write access to all of your repositories, so a fine-grained token limited to Actions is safer.
+        </p>
+      </div>
+      <div id="tokenStatus" class="status-text"></div>
+
+      <div class="sync-option">
+        <label class="checkbox-label">
+          <input type="checkbox" id="syncTokenCheckbox">
+          <span>Sync token across devices (if signed into Chrome)</span>
+        </label>
+        <p class="sync-description">
+          When enabled, your GitHub token will be synchronized across all your Chrome instances where you're signed in.
+          The token will be stored on Google's servers (encrypted in transit).
+          <strong>Default: OFF</strong> for privacy. Your repositories and settings are always synced.
+        </p>
+      </div>
+
+    </section>
+
+    <!-- Step 3: where repositories are added -->
+    <section class="settings-section setup-step" data-step="repos" hidden>
+      <h2>🚀 Add repositories</h2>
+      <ol class="getting-started">
+        <li><strong>Click the extension icon</strong> to open the popup, then <strong>+ Add</strong>. On a repository's GitHub page the popup offers it right away: click <strong>Add it</strong>.</li>
+        <li><strong>Type an Owner</strong>: your GitHub username or an organization. Owners you have used are remembered and offered when you click the field.</li>
+        <li><strong>Pick a Repository</strong> from the dropdown: every repository of that owner your token can see, private ones included.</li>
+        <li><strong>Select a branch</strong>: "All branches" or a specific one.</li>
+        <li><strong>Click "Add Repo"</strong>, then watch the icon: its color and number cover every monitored repository.</li>
+      </ol>
+    </section>
+
+    <div class="step-nav">
+      <button type="button" id="stepBack" class="btn btn-secondary">Back</button>
+      <span id="stepHint" class="step-hint" aria-live="polite"></span>
+      <button type="button" id="stepNext" class="btn btn-primary">Next</button>
+    </div>
+    </div>
+
+    <div class="tab-panel" role="tabpanel" id="panel-monitoring" aria-labelledby="tab-monitoring" hidden>
+    <!-- Polling Interval Section -->
+    <section class="settings-section">
+      <h2>Polling Interval</h2>
+      <p class="description">
+        How often to check for updates when all workflows are stable (completed/failed).
+        When workflows are running, polling automatically speeds up to 5 seconds.
+      </p>
+      <div class="interval-controls">
+        <select id="intervalSelect" class="interval-select">
+          <option value="30" selected>30 seconds (recommended)</option>
+          <option value="60">60 seconds (1 minute)</option>
+          <option value="120">2 minutes</option>
+          <option value="300">5 minutes (conservative)</option>
+        </select>
+        <button id="saveIntervalBtn" class="btn btn-primary">Save</button>
+      </div>
+      <div id="intervalStatus" class="status-text"></div>
+      <div class="info-box">
+        <strong>Adaptive Smart Polling:</strong>
+        <ul>
+          <li>Normal mode uses your selected interval for efficient API usage</li>
+          <li>When ANY workflow is running or queued, switches to 5-second polling</li>
+          <li>Returns to normal interval once all workflows complete</li>
+          <li>Chrome runs background checks at most every 30 seconds, so 30 seconds is the shortest normal interval</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Notifications Section -->
+    <section class="settings-section">
+      <h2>🔔 Notifications</h2>
+      <p class="description">
+        Get desktop notifications when workflow status changes.
+      </p>
+      <div class="sync-option">
+        <label class="checkbox-label">
+          <input type="checkbox" id="notificationsCheckbox" data-pref="notificationsEnabled">
+          <span>Enable desktop notifications</span>
+        </label>
+        <p class="sync-description">
+          When enabled, you'll receive a notification when a workflow status changes (starts, completes, fails).
+          Notifications include:
+        </p>
+        <ul>
+          <li>Repository name (owner/repo)</li>
+          <li>Workflow name and status</li>
+          <li>Colored icon matching the status (🟢 green, 🟡 yellow, 🔴 red)</li>
+          <li>Click to open workflow run directly in GitHub</li>
+          <li>Smart filtering: only on status changes, skips errors and first poll</li>
+          <li>Higher priority for failures</li>
+        </ul>
+        <p class="sync-description">
+          <strong>Enabled by default.</strong> Preference syncs across devices.
+        </p>
+      </div>
+      <div id="notificationsStatus" class="status-text"></div>
+    </section>
+
+    <!-- Toolbar badge -->
+    <section class="settings-section">
+      <h2>Toolbar badge</h2>
+      <p class="description">
+        A number on the toolbar icon: how many repositories are failing, or running when nothing fails. Hover the
+        icon to see both counts.
+      </p>
+      <div class="interval-controls">
+        <label class="sr-only" for="badgeSelect">Number on the toolbar icon</label>
+        <select id="badgeSelect" class="interval-select" data-pref="badgeMode">
+          <option value="both">Failing, else running (default)</option>
+          <option value="failing">Failing only</option>
+          <option value="off">No number</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- What the toolbar icon opens -->
+    <section class="settings-section">
+      <h2>Toolbar icon opens</h2>
+      <p class="description">
+        The popup closes when you click elsewhere. The side panel docks on the right and stays open while you browse
+        and switch tabs. Either way, the buttons at the top can dock the popup into the side panel or pop it out into
+        a window of its own.
+      </p>
+      <div class="interval-controls">
+        <label class="sr-only" for="iconOpensSelect">What the toolbar icon opens</label>
+        <select id="iconOpensSelect" class="interval-select" data-pref="iconOpens">
+          <option value="popup">The popup (default)</option>
+          <option value="panel">The side panel</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Run controls -->
+    <section class="settings-section">
+      <h2>Re-run and cancel</h2>
+      <label class="checkbox-label">
+        <input type="checkbox" id="runControlsCheckbox" data-pref="runControls">
+        <span>Show re-run and cancel buttons in the popup</span>
+      </label>
+      <p class="sync-description">
+        Off by default. The token then needs <strong>Actions: Read and write</strong>:
+        <a href="#setup" data-goto-step="token">add it to your token</a>.
+      </p>
+    </section>
+    </div>
+
+    <div class="tab-panel" role="tabpanel" id="panel-usage" aria-labelledby="tab-usage" hidden>
+    <!-- Rate Limit Info Section -->
+    <section class="settings-section">
+      <h2>API Usage</h2>
+      <p class="description">
+        GitHub allows 5,000 API requests per hour. The extension asks GitHub "has anything changed?" with each check
+        (a conditional request): when nothing has, GitHub answers "304 Not Modified", which does not count against
+        the limit. So most checks are free, even during 5-second fast polling.
+      </p>
+      <div class="rate-limit-info">
+        <div class="info-row">
+          <span class="label">Monitored repositories (active):</span>
+          <span id="repoCount" class="value">-</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Last check:</span>
+          <span id="lastPoll" class="value">-</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Rate limit remaining:</span>
+          <span id="rateRemaining" class="value">-</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Worst case (nothing cached) per hour:</span>
+          <span id="requestRate" class="value">-</span>
+        </div>
+      </div>
+      <p class="help-text">
+        Paused repositories are not checked at all. If the limit is ever reached, checking pauses until it resets and
+        the popup shows when.
+      </p>
+    </section>
+    </div>
+
+    <div class="tab-panel" role="tabpanel" id="panel-guide" aria-labelledby="tab-guide" hidden>
+    <section class="settings-section how-it-works">
+      <h2>📖 How It Works</h2>
+      <p class="description">
+        GitHub Actions Monitor tracks the status of your GitHub Actions workflows across multiple repositories and provides real-time visual feedback through a dynamically colored extension icon.
+      </p>
+
+      <h3>🎨 Icon Colors</h3>
+      <div class="color-legend">
+        <div class="color-item">
+          <span class="color-dot color-yellow"></span>
+          <div>
+            <strong>Yellow (Highest Priority)</strong>
+            <p>One or more workflows are currently running or queued</p>
+          </div>
+        </div>
+        <div class="color-item">
+          <span class="color-dot color-green"></span>
+          <div>
+            <strong>Green (All Success)</strong>
+            <p>All monitored workflows have passed successfully</p>
+          </div>
+        </div>
+        <div class="color-item">
+          <span class="color-dot color-red"></span>
+          <div>
+            <strong>Flashing Red/Green (Mixed)</strong>
+            <p>Some workflows succeeded, others failed (flashes every 1 second)</p>
+          </div>
+        </div>
+        <div class="color-item">
+          <span class="color-dot color-red"></span>
+          <div>
+            <strong>Red (All Failed)</strong>
+            <p>All monitored workflows have failed</p>
+          </div>
+        </div>
+        <div class="color-item">
+          <span class="color-dot color-gray"></span>
+          <div>
+            <strong>Gray</strong>
+            <p>No repositories configured, no data available, or error</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="description">
+        <strong>The number on the icon</strong> counts failing repositories in red, or running ones in amber when nothing
+        fails (Monitoring tab: change or turn off). Hover the icon for both counts.
+      </p>
+
+      <h3>⚡ Adaptive Smart Polling</h3>
+      <p class="description">
+        The extension intelligently adjusts its polling frequency based on workflow activity to provide near real-time updates when you need them most, while conserving API requests when workflows are stable.
+      </p>
+
+      <div class="polling-explanation">
+        <div class="polling-mode">
+          <h4>🐢 Normal Mode</h4>
+          <p>When all workflows are in a stable state (completed, failed, or no workflows):</p>
+          <ul>
+            <li>Polls at your configured interval (default: 30 seconds)</li>
+            <li>Efficient API usage for long-term monitoring</li>
+            <li>Suitable for watching multiple repositories</li>
+          </ul>
+        </div>
+
+        <div class="polling-mode">
+          <h4>🚀 Fast Mode (Automatic)</h4>
+          <p><strong>Automatically activates</strong> when ANY repository shows a yellow icon (workflow running or queued):</p>
+          <ul>
+            <li>Switches to 5-second polling</li>
+            <li>Provides near real-time updates on workflow progress</li>
+            <li>Catches workflow completions almost instantly</li>
+            <li><strong>Automatically returns to normal mode</strong> once all workflows complete or fail</li>
+          </ul>
+          <p class="highlight">
+            💡 <strong>Example:</strong> You push code triggering a workflow. The icon turns yellow and polling speeds up to 5 seconds. When your workflow finishes (green or red), polling automatically returns to your configured interval.
+          </p>
+        </div>
+      </div>
+
+      <h3>🔄 How Status is Determined</h3>
+      <p class="description">
+        For each monitored repository (and branch), the extension looks at the <strong>latest run of every workflow</strong>, not just the newest run, so a failing CI is never hidden by a deploy that finished after it. A repository is yellow if any workflow is running, red if any workflow's latest run failed, and green when they all passed. Cancelled and skipped runs are shown but never turn a repository red. The popup lists each workflow with its state and timing. The icon color reflects the highest priority status across all repositories:
+      </p>
+      <p class="highlight">
+        <strong>Priority Order:</strong> Yellow (in-progress) > Green (all success) > Mixed (flash red/green) > Red (all failed) > Gray (no data)
+      </p>
+
+      <h3>📦 Repository Features</h3>
+      <div class="polling-explanation">
+        <div class="polling-mode">
+          <h4>👤 Owner and Repository Picker</h4>
+          <p>Adding a repository takes an owner and a pick from a list:</p>
+          <ul>
+            <li>Type an owner: your GitHub username or an organization</li>
+            <li>The Repository dropdown lists every repository of that owner your token can see, private ones included</li>
+            <li>Private, archived and already monitored repositories are labelled</li>
+            <li>Owners you have added repositories from are remembered (and synced) and offered when you click the field</li>
+            <li>The last owner you used is filled in the next time you open the popup</li>
+          </ul>
+        </div>
+
+        <div class="polling-mode">
+          <h4>🌿 Per-Branch Monitoring</h4>
+          <p>Monitor specific branches of your repositories:</p>
+          <ul>
+            <li>After entering a repository, select which branch to monitor</li>
+            <li>Choose "All branches" to monitor any workflow activity</li>
+            <li>Or select a specific branch (e.g., main, develop, production)</li>
+            <li>Monitor the same repository on multiple branches simultaneously</li>
+            <li>Each repo+branch combination tracked independently</li>
+          </ul>
+        </div>
+
+        <div class="polling-mode">
+          <h4>🗂 Compact Cards</h4>
+          <p>Each repository is two lines; the details are a hover or a click away:</p>
+          <ul>
+            <li>Line one: the repository, its branch, and a "Review" marker when a run waits for a review or approval</li>
+            <li>Line two: the state, where a failure happened ("Test › npm test") and the run's timing</li>
+            <li>Hover: every workflow's state, and the commit, pull request and author of the latest run</li>
+            <li>The chevron expands a card: run context, every workflow with its last ten runs as a strip of bars, and a link to the failed job's log</li>
+            <li>A failed workflow quotes the lines from its log that say why, so you often do not need to open GitHub</li>
+            <li>Step lights: a running workflow lights a light per step as each finishes (the running one pulses) and names the step it is on; a failed one shows where it stopped</li>
+            <li>Keep it in view: the buttons at the top dock the popup into the side panel (stays open while you browse), pop it out into its own window, or (from those) keep it on top of every other window</li>
+            <li>The counts above the list filter it: click the red one to see only what is failing</li>
+          </ul>
+        </div>
+
+        <div class="polling-mode">
+          <h4>🔕 Ignoring a Workflow</h4>
+          <p>Every workflow in an expanded card has a switch:</p>
+          <ul>
+            <li>Off: the workflow stays listed (dimmed) but never turns the repository red or yellow</li>
+            <li>It is left out of the counts, the badge and notifications</li>
+            <li>Useful for scheduled jobs, CodeQL, Dependabot or anything else noisy</li>
+            <li>Kept per repository and branch, and synced</li>
+          </ul>
+        </div>
+
+        <div class="polling-mode">
+          <h4>↻ Re-run and Cancel (optional)</h4>
+          <p>Off by default, so the extension only reads. Turned on (Setup, Choose features):</p>
+          <ul>
+            <li>Failed workflows get a re-run button (re-runs the failed jobs)</li>
+            <li>Running workflows get a cancel button (asks first)</li>
+            <li>The token needs Actions: Read and write. Chosen before the token, the token link asks for it. With a token already saved, Setup checks it (by asking to cancel a run that already finished, which GitHub declines; nothing is cancelled) and, only if it is missing, shows how to add it to that token on GitHub</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    </div>
+  </div>
+
+  <script src="storage-manager.js"></script>
+  <script src="github-api.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

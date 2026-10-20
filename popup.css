@@ -1,0 +1,1248 @@
+/* Popup styles for GitHub Actions Monitor */
+
+/* Theme: GitHub's light palette by default, its dark palette when the browser or OS is in dark mode. */
+:root {
+  color-scheme: light dark;
+  --fg: #24292f;
+  --fg-muted: #57606a;
+  --fg-subtle: #6e7781;
+  --bg: #ffffff;
+  --bg-subtle: #f6f8fa;
+  --bg-hover: #eef1f4;
+  --bg-active: #e5e7eb;
+  --border: #d0d7de;
+  --border-muted: #e1e5ea;
+  --border-strong: #b8bfc6;
+  --accent: #0969da;
+  --accent-strong: #0550ae;
+  --accent-subtle: #ddf4ff;
+  --focus-ring: rgba(9, 105, 218, 0.3);
+  --success-fg: #1a7f37;
+  --danger-fg: #cf222e;
+  --warning-fg: #9a6700;
+  --attention-bg: #fff8c5;
+  --attention-border: #d4a72c;
+  --attention-fg: #7d4e00;
+  --info-bg: #ddf4ff;
+  --info-border: #54aeff;
+  --shadow: rgba(140, 149, 159, 0.25);
+  --btn-bg: #f6f8fa;
+  --btn-hover: #eef1f4;
+  --primary-bg: #1f883d;
+  --primary-hover: #1a7f37;
+  --green: #2da44e;
+  --yellow: #d4a72c;
+  --red: #e5534b;
+  --gray: #9ca3af;
+  --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 6l3.5 3.5L11.5 6' fill='none' stroke='%2357606a' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --mono: 'SF Mono', Monaco, 'Cascadia Code', Consolas, monospace;
+  --radius: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #e6edf3;
+    --fg-muted: #9198a1;
+    --fg-subtle: #7d8590;
+    --bg: #0d1117;
+    --bg-subtle: #151b23;
+    --bg-hover: #1c2330;
+    --bg-active: #262c36;
+    --border: #3d444d;
+    --border-muted: #2a3038;
+    --border-strong: #656c76;
+    --accent: #4493f8;
+    --accent-strong: #79b8ff;
+    --accent-subtle: rgba(56, 139, 253, 0.15);
+    --focus-ring: rgba(68, 147, 248, 0.45);
+    --success-fg: #3fb950;
+    --danger-fg: #f85149;
+    --warning-fg: #d29922;
+    --attention-bg: rgba(187, 128, 9, 0.15);
+    --attention-border: rgba(187, 128, 9, 0.4);
+    --attention-fg: #d29922;
+    --info-bg: rgba(56, 139, 253, 0.1);
+    --info-border: rgba(56, 139, 253, 0.4);
+    --shadow: rgba(1, 4, 9, 0.6);
+    --btn-bg: #212830;
+    --btn-hover: #2a313c;
+    --primary-bg: #238636;
+    --primary-hover: #29903b;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --gray: #7d8590;
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 6l3.5 3.5L11.5 6' fill='none' stroke='%239198a1' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 500px;
+  min-height: 320px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--fg);
+  background-color: var(--bg);
+}
+
+.container {
+  padding: 10px 12px 12px;
+}
+
+/* Docked in the side panel or popped out: fill the width given (the side panel is resizable). */
+html[data-view="panel"] body,
+html[data-view="window"] body,
+html[data-view="pip"] body {
+  width: auto;
+  min-width: 0;
+  min-height: 100vh;
+}
+
+html[data-view="panel"] .container,
+html[data-view="window"] .container,
+html[data-view="pip"] .container {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* Narrow side panels: the Refresh button shows only its icon; its name stays for screen readers. */
+@media (max-width: 400px) {
+  /* (more specific than the fixed width further down, which keeps the label from shifting) */
+  .top-actions .btn-refresh {
+    width: 28px;
+    padding: 0;
+  }
+
+  .btn-refresh .btn-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .topbar h1 {
+    font-size: 14px;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Icons: 16px line icons in the current text color */
+.icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon-play path,
+.icon-grip circle {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* Header */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+h1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fg);
+  white-space: nowrap;
+}
+
+.brand-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* In a narrow side panel the name gives way to the buttons. */
+.topbar h1 {
+  min-width: 0;
+}
+
+.brand-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-actions {
+  flex: none;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--fg);
+  background-color: var(--btn-bg);
+  cursor: pointer;
+  transition: background-color 0.12s, border-color 0.12s, color 0.12s, opacity 0.12s;
+}
+
+.btn:hover {
+  background-color: var(--btn-hover);
+  border-color: var(--border-strong);
+}
+
+.btn:active {
+  background-color: var(--bg-active);
+}
+
+.btn:focus-visible,
+.chip:focus-visible,
+.drag-handle:focus-visible,
+.switch:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  color: #ffffff;
+  background-color: var(--primary-bg);
+  border-color: rgba(31, 35, 40, 0.15);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: rgba(31, 35, 40, 0.15);
+}
+
+.btn-sm {
+  height: 26px;
+  padding: 0 8px;
+}
+
+.btn-icon {
+  width: 28px;
+  padding: 0;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--fg-muted);
+}
+
+.btn-ghost:hover {
+  border-color: transparent;
+  background-color: var(--bg-active);
+  color: var(--fg);
+}
+
+.btn-icon-sm {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+}
+
+.btn-add.is-open {
+  border-color: var(--accent);
+  color: var(--accent);
+  background-color: var(--accent-subtle);
+}
+
+.btn-add.is-open .icon {
+  transform: rotate(45deg);
+}
+
+.btn-add .icon {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.15s;
+}
+
+/* Refresh: fixed width, so "Refreshing" and "✓ Refreshed" replace the label without resizing the button. */
+.btn-refresh {
+  width: 112px;
+}
+
+.btn-refresh .spinner {
+  display: none;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.btn-refresh .icon-refresh {
+  width: 14px;
+  height: 14px;
+}
+
+.btn-refresh.is-busy .spinner {
+  display: inline-block;
+}
+
+.btn-refresh.is-busy .icon-refresh,
+.btn-refresh.is-done .icon-refresh {
+  display: none;
+}
+
+.btn-refresh.is-busy:disabled {
+  opacity: 1;
+  cursor: progress;
+}
+
+.btn-refresh.is-done {
+  color: var(--success-fg);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Form controls */
+.input,
+.select {
+  width: 100%;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 12.5px;
+  font-family: var(--mono);
+  color: var(--fg);
+  background-color: var(--bg);
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+
+.select {
+  appearance: none;
+  padding-right: 28px;
+  background-image: var(--chevron);
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 14px;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.select option {
+  color: var(--fg);
+  background-color: var(--bg);
+}
+
+.input:hover:not(:disabled),
+.select:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.input:disabled,
+.select:disabled {
+  background-color: var(--bg-subtle);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.select-sm {
+  width: auto;
+  height: 26px;
+  padding: 0 24px 0 8px;
+  font-family: inherit;
+  font-size: 12px;
+  background-position: right 6px center;
+  background-color: var(--btn-bg);
+}
+
+/* A small on/off switch (a styled checkbox) */
+.switch {
+  appearance: none;
+  position: relative;
+  flex: none;
+  width: 26px;
+  height: 14px;
+  border-radius: 7px;
+  background-color: var(--border-strong);
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.switch::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: transform 0.15s;
+}
+
+.switch:checked {
+  background-color: var(--green);
+}
+
+.switch:checked::before {
+  transform: translateX(12px);
+}
+
+/* Banner */
+.banner {
+  padding: 6px 10px;
+  margin-bottom: 8px;
+  background-color: var(--attention-bg);
+  border: 1px solid var(--attention-border);
+  border-radius: var(--radius);
+  font-size: 12px;
+  color: var(--attention-fg);
+}
+
+/* "This tab" suggestion */
+.suggestion {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 4px 4px 10px;
+  margin-bottom: 8px;
+  border: 1px solid var(--info-border);
+  border-radius: var(--radius);
+  background-color: var(--info-bg);
+  font-size: 12px;
+}
+
+.suggestion-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--fg-muted);
+}
+
+.suggestion-text strong {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--fg);
+}
+
+/* Toolbar: summary chips (also a filter), sort, add */
+.list-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.chips {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 9px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-muted);
+  background-color: var(--bg);
+  cursor: pointer;
+  transition: background-color 0.12s, border-color 0.12s;
+}
+
+.chip:hover {
+  background-color: var(--bg-hover);
+}
+
+.chip[aria-pressed="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
+  background-color: var(--accent-subtle);
+}
+
+.chip .icon {
+  width: 12px;
+  height: 12px;
+  color: var(--yellow);
+}
+
+/* Add form */
+.add-panel {
+  padding: 10px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background-color: var(--bg-subtle);
+}
+
+.repo-controls {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 8px;
+  align-items: end;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.field label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+}
+
+.field-count {
+  margin-left: 4px;
+  font-weight: 400;
+  color: var(--fg-subtle);
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-actions .btn {
+  height: 30px;
+  padding: 0 16px;
+}
+
+.status-text {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+
+.status-text:empty {
+  display: none;
+}
+
+.status-text.success {
+  color: var(--success-fg);
+}
+
+.status-text.error {
+  color: var(--danger-fg);
+}
+
+/* Owner suggestions */
+.autocomplete-wrapper {
+  position: relative;
+}
+
+.autocomplete-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  min-width: 220px;
+  margin-top: 4px;
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px var(--shadow);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.autocomplete-item {
+  padding: 6px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.active {
+  background-color: var(--bg-hover);
+}
+
+.autocomplete-item-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  font-family: var(--mono);
+  color: var(--accent);
+}
+
+.autocomplete-item-desc {
+  font-size: 11px;
+  color: var(--fg-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.owner-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.owner-item-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.owner-forget {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--fg-muted);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.owner-forget:hover {
+  background-color: var(--bg-active);
+  color: var(--fg);
+}
+
+/* Repository list */
+.empty-state {
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--fg-muted);
+  font-size: 12.5px;
+}
+
+.repo-section-header {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-subtle);
+  margin: 10px 0 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.repo-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  column-gap: 7px;
+  padding: 5px 6px 5px 4px;
+  margin-bottom: 5px;
+  border: 1px solid var(--border-muted);
+  border-radius: 8px;
+  background-color: var(--bg-subtle);
+  transition: background-color 0.12s, border-color 0.12s;
+}
+
+.repo-item:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--border);
+}
+
+.repo-item.state-red {
+  box-shadow: inset 3px 0 0 var(--red);
+}
+
+.repo-item.state-yellow {
+  box-shadow: inset 3px 0 0 var(--yellow);
+}
+
+.repo-item.dragging {
+  opacity: 0.4;
+}
+
+.repo-item.drop-before::before,
+.repo-item.drop-after::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--accent);
+}
+
+.repo-item.drop-before::before {
+  top: -4px;
+}
+
+.repo-item.drop-after::after {
+  bottom: -4px;
+}
+
+/* Paused: gray and faded */
+.repo-item-disabled {
+  opacity: 0.6;
+}
+
+.repo-item-disabled .repo-name {
+  color: var(--fg-muted);
+}
+
+.drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--fg-subtle);
+  cursor: grab;
+  opacity: 0.45;
+}
+
+.drag-handle .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.drag-handle[hidden] {
+  display: none;
+}
+
+.repo-item:hover .drag-handle,
+.drag-handle:focus-visible {
+  opacity: 1;
+}
+
+.drag-handle:hover {
+  background-color: var(--bg-active);
+  color: var(--fg);
+}
+
+/* Status dots (cards, chips, workflow rows) */
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--bg);
+}
+
+.mini-dot {
+  width: 8px;
+  height: 8px;
+  min-width: 8px;
+  border-radius: 50%;
+}
+
+.status-green {
+  background-color: var(--green);
+}
+
+.status-yellow {
+  background-color: var(--yellow);
+}
+
+.status-red {
+  background-color: var(--red);
+}
+
+.status-gray {
+  background-color: var(--gray);
+}
+
+.status-yellow.status-dot {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 5px rgba(212, 167, 44, 0.25);
+  }
+}
+
+.repo-main {
+  min-width: 0;
+}
+
+.repo-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.repo-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.repo-name:hover {
+  text-decoration: underline;
+}
+
+.branch-chip,
+.paused-chip {
+  flex: none;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 6px;
+  border-radius: 9px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 17px;
+  color: var(--fg-muted);
+  background-color: var(--bg-active);
+}
+
+.paused-chip {
+  font-family: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.review-pill {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 3px;
+  padding: 0 6px 0 4px;
+  border: 1px solid var(--attention-border);
+  border-radius: 9px;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 15px;
+  color: var(--attention-fg);
+  background-color: var(--attention-bg);
+  text-decoration: none;
+}
+
+.review-pill:hover {
+  text-decoration: underline;
+}
+
+.review-pill .icon {
+  width: 11px;
+  height: 11px;
+}
+
+.repo-sub {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11.5px;
+  color: var(--fg-muted);
+}
+
+.status-message {
+  font-weight: 500;
+}
+
+.state-red .status-message,
+.failure-text {
+  color: var(--danger-fg);
+}
+
+.failure-text {
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.run-timing {
+  font-variant-numeric: tabular-nums;
+}
+
+.repo-actions {
+  display: flex;
+  gap: 0;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+
+.repo-item:hover .repo-actions,
+.repo-actions:focus-within,
+.repo-item-disabled .repo-actions {
+  opacity: 1;
+}
+
+.btn-remove:hover {
+  color: var(--danger-fg);
+}
+
+.btn-toggle .icon,
+.btn-remove .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.expand-btn {
+  width: auto;
+  min-width: 24px;
+  padding: 0 4px;
+  gap: 2px;
+}
+
+.expand-btn .icon {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.15s;
+}
+
+.expand-btn[aria-expanded="true"] .icon {
+  transform: rotate(90deg);
+}
+
+.expand-count {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.expand-spacer {
+  width: 0;
+}
+
+/* Expanded card */
+.repo-detail {
+  grid-column: 1 / -1;
+  margin: 5px 0 1px 24px;
+  padding-top: 5px;
+  border-top: 1px dashed var(--border);
+}
+
+.run-context {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  margin-bottom: 4px;
+  font-size: 11.5px;
+  color: var(--fg-muted);
+}
+
+.context-title {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  color: var(--fg);
+}
+
+.context-link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.context-link:hover {
+  text-decoration: underline;
+}
+
+.context-sha {
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+/* One grid for all rows, so names, history strips, states and switches line up in columns. */
+.workflow-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  column-gap: 8px;
+  row-gap: 1px;
+  padding-left: 2px;
+  font-size: 12px;
+}
+
+.workflow-row {
+  display: contents;
+}
+
+.workflow-row > * {
+  min-height: 24px;
+  line-height: 24px;
+}
+
+.workflow-row > .history,
+.workflow-row > .workflow-tools,
+.workflow-row > .mini-dot {
+  display: flex;
+  align-items: center;
+}
+
+.workflow-row > .mini-dot {
+  min-height: 8px;
+  height: 8px;
+  align-self: center;
+}
+
+.workflow-row.is-ignored > :not(.workflow-tools),
+.workflow-row.is-ignored .review-pill {
+  opacity: 0.45;
+}
+
+.workflow-row.is-ignored .workflow-name {
+  text-decoration: line-through;
+}
+
+.workflow-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.workflow-name:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.workflow-state {
+  color: var(--fg-muted);
+  white-space: nowrap;
+  font-size: 11.5px;
+}
+
+.workflow-tools {
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.btn-run .icon {
+  width: 13px;
+  height: 13px;
+}
+
+.workflow-row > .workflow-failure,
+.workflow-row > .workflow-steps {
+  grid-column: 2 / -1;
+  min-height: 0;
+  line-height: 1.4;
+  margin: -4px 0 3px;
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+
+/* The lines from a failed step's log that say why */
+.workflow-row > .error-lines {
+  grid-column: 2 / -1;
+  margin: 0 0 6px;
+  padding: 6px 8px;
+  max-height: 7.5em;
+  overflow: auto;
+  border-left: 2px solid var(--red);
+  border-radius: 0 4px 4px 0;
+  background-color: var(--bg);
+  font: 10.5px/1.45 ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
+  color: var(--fg);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Step lights: one per step, grouped by job; lit green as each finishes, the running one pulses */
+.lights {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  vertical-align: middle;
+}
+
+.light-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.light {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--gray);
+  opacity: 0.45;
+}
+
+.light-done { background-color: var(--green); opacity: 1; }
+.light-failed { background-color: var(--red); opacity: 1; }
+.light-skipped { opacity: 0.25; }
+.light-cancelled { background-color: var(--fg-muted, #888); opacity: 0.7; }
+
+.light-running {
+  background-color: var(--yellow);
+  opacity: 1;
+  box-shadow: 0 0 0 0 var(--yellow);
+  animation: light-pulse 1.4s ease-out infinite;
+}
+
+@keyframes light-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--yellow) 70%, transparent); }
+  100% { box-shadow: 0 0 0 5px transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .light-running { animation: none; }
+}
+
+.current-step {
+  color: var(--fg);
+}
+
+.failure-link {
+  font-family: var(--mono);
+  color: var(--danger-fg);
+  text-decoration: none;
+}
+
+.failure-link:hover {
+  text-decoration: underline;
+}
+
+/* Recent runs of a workflow: one bar each, oldest left */
+.history {
+  gap: 1px;
+}
+
+.history .bar {
+  align-self: center;
+}
+
+.bar {
+  width: 4px;
+  height: 12px;
+  border-radius: 1px;
+  background-color: var(--gray);
+}
+
+.bar-green {
+  background-color: var(--green);
+  height: 7px;
+}
+
+.bar-red {
+  background-color: var(--red);
+}
+
+.bar-yellow {
+  background-color: var(--yellow);
+  height: 10px;
+}
+
+.bar-gray {
+  height: 5px;
+}
+
+/* Footer and messages */
+.popup-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--fg-subtle);
+}
+
+.toast {
+  position: sticky;
+  bottom: 8px;
+  margin-top: 8px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--bg);
+  box-shadow: 0 6px 18px var(--shadow);
+  font-size: 12px;
+}
+
+.toast.success {
+  border-color: var(--success-fg);
+  color: var(--success-fg);
+}
+
+.toast.error {
+  border-color: var(--danger-fg);
+  color: var(--danger-fg);
+}
+
+/* The hidden attribute wins over any display set above (buttons and sections are flex or grid). */
+[hidden] {
+  display: none !important;
+}
