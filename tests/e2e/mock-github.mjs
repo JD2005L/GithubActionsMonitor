@@ -28,8 +28,17 @@ export class MockGitHub {
    * A workflow run. failedAt: { job, step, log? } (log: the failed job's log text). progress (a running run):
    * [{ job, steps: [[name, state], ...] }] with states done, running, pending, failed, skipped.
    */
-  static run({ id, workflowId, name, status = 'completed', conclusion = 'success', branch = 'main', title = 'Update', startedAgoSec = 600, durationSec = 120, owner, repo, actor = 'octo-dev', event = 'push', pr = null, failedAt = null, progress = null }) {
-    return { id, workflowId, name, status, conclusion, branch, title, startedAgoSec, durationSec, owner, repo, actor, event, pr, failedAt, progress };
+  static run({ id, workflowId, name, status = 'completed', conclusion = 'success', branch = 'main', title = 'Update', startedAgoSec = 600, durationSec = 120, owner, repo, actor = 'octo-dev', event = 'push', pr = null, failedAt = null, progress = null, sha = null }) {
+    return { id, workflowId, name, status, conclusion, branch, title, startedAgoSec, durationSec, owner, repo, actor, event, pr, failedAt, progress, sha };
+  }
+
+  /** A repository's workflows: the ones its runs name, in GitHub's listing shape (all active). */
+  apiWorkflows(fullName) {
+    const seen = new Map();
+    for (const r of this.repos[fullName].runs || []) {
+      if (!seen.has(r.workflowId)) seen.set(r.workflowId, { id: r.workflowId, name: r.name, path: `.github/workflows/${r.name.toLowerCase()}.yml`, state: 'active' });
+    }
+    return { total_count: seen.size, workflows: [...seen.values()] };
   }
 
   /** A run whose failed job has this id, with its repository. */
@@ -86,7 +95,9 @@ export class MockGitHub {
       created_at: iso(started - 2000),
       updated_at: iso(done ? started + r.durationSec * 1000 : this.now() - 3000),
       head_commit: { message: `${r.title}\n\nDetails of the change.` },
-      head_sha: `${String(r.id).padStart(7, '0')}abcdef0123456789`,
+      // One commit per run unless the test says two runs share one (sha: the 7-character short form). The default
+      // is derived from the run id, so it is stable but looks like a real hash in the store screenshots.
+      head_sha: `${r.sha ?? ((r.id * 2654435761) >>> 0).toString(16).padStart(8, '0').slice(0, 7)}abcdef0123456789`,
       run_number: r.id,
       run_attempt: r.attempt ?? 1,
       event: r.pr ? 'pull_request' : r.event,
@@ -182,8 +193,13 @@ export class MockGitHub {
       const found = this.findFailedJob(path.split('/')[6]);
       if (!found || !found.r.failedAt.log) res = this.json(404, { message: 'Not Found' }, this.rateHeaders(true));
       else res = { status: 200, headers: { 'content-type': 'text/plain', ...this.rateHeaders(true) }, body: found.r.failedAt.log };
+    } else if (/^\/repos\/[^/]+\/[^/]+\/actions\/workflows$/.test(path)) {
+      const [, , owner, name] = path.split('/');
+      const full = `${owner}/${name}`;
+      res = this.repos[full] ? this.json(200, this.apiWorkflows(full), this.rateHeaders(true)) : this.json(404, { message: 'Not Found' }, this.rateHeaders(true));
     } else {
-      const m = /^\/repos\/([^/]+)\/([^/]+)\/(branches|actions\/runs)$/.exec(path);
+      // A repository's runs, or one workflow's runs (/actions/workflows/<id>/runs).
+      const m = /^\/repos\/([^/]+)\/([^/]+)\/(branches|actions\/runs|actions\/workflows\/(\d+)\/runs)$/.exec(path);
       const repo = m ? this.repos[`${m[1]}/${m[2]}`] : null;
       if (!repo) {
         res = this.json(404, { message: 'Not Found' }, this.rateHeaders(true));
@@ -195,7 +211,7 @@ export class MockGitHub {
       } else {
         const branch = u.searchParams.get('branch');
         const perPage = Math.min(100, Number(u.searchParams.get('per_page') ?? 30));
-        const runs = repo.runs.filter((r) => !branch || r.branch === branch).slice(0, perPage);
+        const runs = repo.runs.filter((r) => (!branch || r.branch === branch) && (!m[4] || String(r.workflowId) === m[4])).slice(0, perPage);
         const body = JSON.stringify({ total_count: runs.length, workflow_runs: runs.map((r) => this.apiRun(`${m[1]}/${m[2]}`, r)) });
         // Like GitHub, the ETag covers the body. A matching conditional request is a free 304.
         const tag = this.etag(body.replace(/"updated_at":"[^"]+"/g, '').replace(/"run_started_at":"[^"]+"/g, '').replace(/"created_at":"[^"]+"/g, ''));

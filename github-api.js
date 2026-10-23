@@ -152,14 +152,19 @@ const GitHubAPI = {
    * @param {string} token - GitHub personal access token
    * @param {string} branch - Optional branch name to filter by (defaults to "all")
    * @param {{get: Function, set: Function}} [cache] - ETag cache keyed by request URL
+   * @param {Array<number|string>} [ignored] - Workflow IDs that do not count
+   * @param {number|null} [workflowId] - A pinned workflow: only its runs are read (its own endpoint, so a busy
+   *   repository's other workflows cannot push its history out of the page)
    * @returns {Promise<Object>} Status result object
    */
-  async fetchRepoStatus(owner, repo, token, branch = 'all', cache = null, ignored = []) {
+  async fetchRepoStatus(owner, repo, token, branch = 'all', cache = null, ignored = [], workflowId = null) {
     const repoKey = `${owner}/${repo}`;
 
     try {
       // Build URL with optional branch filter
-      let url = `${this.BASE_URL}/repos/${owner}/${repo}/actions/runs?per_page=${RUNS_PER_PAGE}`;
+      let url = workflowId
+        ? `${this.BASE_URL}/repos/${owner}/${repo}/actions/workflows/${encodeURIComponent(workflowId)}/runs?per_page=${HISTORY_LENGTH}`
+        : `${this.BASE_URL}/repos/${owner}/${repo}/actions/runs?per_page=${RUNS_PER_PAGE}`;
       if (branch && branch !== 'all') {
         url += `&branch=${encodeURIComponent(branch)}`;
       }
@@ -401,6 +406,31 @@ const GitHubAPI = {
       return { branches: [], source: 'none' };
     } catch (error) {
       return { branches: [], source: 'none' };
+    }
+  },
+
+  /**
+   * A repository's workflows, for pinning one in the add form: active ones, by name. Disabled workflows never run,
+   * so there is nothing to watch.
+   * @returns {Promise<Array<{id: number, name: string, path: string}>|null>} null: could not ask
+   */
+  async listWorkflows(owner, repo, token) {
+    const headers = {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+    const url = `${this.BASE_URL}/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/actions/workflows?per_page=100`;
+    try {
+      const response = await fetch(url, { headers, cache: 'no-store' });
+      if (!response.ok) return null;
+      const data = await response.json();
+      return (data.workflows || [])
+        .filter((w) => w.state === 'active')
+        .map((w) => ({ id: w.id, name: w.name || w.path, path: w.path || '' }))
+        .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+    } catch (error) {
+      return null;
     }
   },
 

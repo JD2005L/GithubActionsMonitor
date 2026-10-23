@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## Current Features (v3.1.0)
+## Current Features (v3.2.0)
 
 **GitHub Actions Monitor** is a Chrome extension that provides real-time monitoring of GitHub Actions workflows across multiple repositories with intelligent status indication and adaptive polling.
 
@@ -35,6 +35,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Select individual branches or "All branches" per repository
   - Same repo can be monitored on multiple branches
   - Branch selector auto-populates from GitHub API
+
+- **📌 Pinned Workflows**: A card for one workflow on one branch
+  - Pick it in the add form's Workflow field, or pin it from an expanded card
+  - Reads only that workflow's runs, so its history is its own
+
+- **🔖 Commit on Every Result**: The state line shows the commit a result is for, dashed when older than the
+  card's newest run; a failure links straight to the failed job's log
 
 - **⏸ Enable/Disable Repository Monitoring**: Pause monitoring to conserve API requests
   - Toggle button (⏸/▶) for each repository
@@ -68,6 +75,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conditional requests: unchanged checks are free (304), even during 5-second fast polling
 - Paused repositories are not checked at all
 - Rate limit handling: pauses until the limit resets, and the settings page shows remaining requests
+
+---
+
+## [3.2.0] - 2026-10-23
+
+From user feedback: "pin a specific repo + branch + workflow", "show the commit beside the result", "a direct link
+to the failed job".
+
+### Added
+- **Pin a workflow**: the add form has a Workflow field ("All workflows" or one of the repository's active
+  workflows), and each workflow in an expanded card has a pin button that adds a card for just that workflow,
+  on the same branch, right after the card it came from. A pinned card shows the workflow as a chip next to the
+  branch, reads only that workflow's runs (GitHub's per-workflow endpoint, so a busy repository's other workflows
+  cannot push its history out of the page), and has no on/off switch (its one workflow always counts). Its id is
+  `owner/repo:branch:wf<workflow id>`; the entry stores the workflow's id and name. Picking a repository also
+  lists its workflows (one request, alongside the branch list).
+- **The commit beside the result**: the card's state line shows the short hash of the commit the headline run
+  is for ("Failed · a1b2c3d · Test › npm test"), linked to the commit, and each expanded workflow row shows its
+  own. When a workflow's latest run is on an older commit than the newest run on the card, its hash is underlined
+  dashed and says so on hover: a green run of the previous push no longer passes for the current one.
+
+### Changed
+- The failed job and step on the collapsed card ("Test › npm test") is a link to that job's log, instead of
+  plain text (the repository name still opens the run).
+- Clicking a failure notification opens the failed job's log instead of the run page.
+- Notifications, removal prompts and accessible names use the card's name ("owner/repo (main, CI)") instead of
+  its internal id ("owner/repo:main").
 
 ---
 

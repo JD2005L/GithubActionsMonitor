@@ -13,6 +13,8 @@ let currentData = {
 };
 
 let currentBranches = [];
+/** The chosen repository's active workflows, for the Workflow field: [{ id, name, path }]. */
+let currentWorkflows = [];
 /** The owner whose repositories fill the Repository dropdown: { owner, repos }. */
 let ownerRepos = null;
 /** Increments per owner lookup, so a slow answer for an owner typed earlier cannot overwrite a newer one. */
@@ -283,7 +285,8 @@ const ICONS = {
   trash: '<path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8.5h5.8l.6-8.5"/>',
   rerun: '<path d="M13.5 8a5.5 5.5 0 1 1-1.61-3.89"/><path d="M13.5 2.5v3h-3"/>',
   stop: '<rect x="4.5" y="4.5" width="7" height="7" rx="1"/>',
-  flag: '<path d="M4 14V2.5M4 3h7.5L10 5.5 11.5 8H4"/>'
+  flag: '<path d="M4 14V2.5M4 3h7.5L10 5.5 11.5 8H4"/>',
+  pin: '<path d="M6 2.5h4M7 2.5v4L4.5 9h7L9 6.5v-4M8 9v4.5"/>'
 };
 
 function icon(name) {
@@ -580,13 +583,34 @@ function contextParts(w) {
   return parts;
 }
 
+/** The commit a workflow's latest run is for, as a link ("a1b2c3d"); null without one. */
+function commitLink(repoKey, w, newestSha) {
+  if (!w || !w.sha) return null;
+  const older = newestSha && w.sha !== newestSha;
+  const link = tabLink(`commit-sha${older ? ' is-older' : ''}`, w.sha, `https://github.com/${repoKey}/commit/${w.sha}`,
+    older ? `Commit ${w.sha}: older than ${newestSha}, the newest commit run here` : `Commit ${w.sha}: the commit this result is for`);
+  return link;
+}
+
+/** The commit of the most recently started counted workflow run: what the card's other results are compared with. */
+function newestSha(workflows) {
+  let newest = null;
+  for (const w of workflows) {
+    if (w.ignored || !w.sha) continue;
+    const at = Date.parse(w.startedAt || '') || 0;
+    if (!newest || at > newest.at) newest = { at, sha: w.sha };
+  }
+  return newest ? newest.sha : null;
+}
+
 /**
  * One repository: a compact two-line card (name and state; the details are in the hover text), with the
  * workflows, their history and the run context one click away.
  */
 function createRepoItem(entry) {
   const id = RepoOrder.idOf(entry);
-  const { repo: repoKey, branch } = RepoOrder.label(entry);
+  const { repo: repoKey, branch, workflow: pinned } = RepoOrder.label(entry);
+  const described = RepoOrder.describe(entry);
   const enabled = RepoOrder.isEnabled(entry);
   const result = currentData.lastResults[id];
   const color = enabled && result ? result.color : 'gray';
@@ -606,7 +630,7 @@ function createRepoItem(entry) {
   handle.hidden = filter !== 'all';
   handle.dataset.focusKey = `${id}|handle`;
   handle.title = 'Drag to reorder (or focus and use the arrow keys)';
-  handle.setAttribute('aria-label', `Reorder ${repoKey}${branch !== 'all' ? ` (${branch})` : ''}: use the up and down arrow keys`);
+  handle.setAttribute('aria-label', `Reorder ${described}: use the up and down arrow keys`);
   handle.appendChild(icon('grip'));
 
   const statusDot = el('span', `status-dot status-${color}`);
@@ -624,6 +648,12 @@ function createRepoItem(entry) {
   });
   line.appendChild(repoLink);
   if (branch !== 'all') line.appendChild(el('span', 'branch-chip', branch));
+  if (pinned) {
+    const chip = el('span', 'workflow-chip', pinned.name);
+    chip.title = `Only the ${pinned.name} workflow`;
+    chip.prepend(icon('pin'));
+    line.appendChild(chip);
+  }
   if (!enabled) line.appendChild(el('span', 'paused-chip', 'Paused'));
   const review = enabled ? firstWorkflow(result, (w) => w.needsReview) : null;
   if (review) {
@@ -642,8 +672,13 @@ function createRepoItem(entry) {
     sub.appendChild(el('span', 'status-message', 'Not checked yet'));
   } else {
     sub.appendChild(el('span', 'status-message', result.message));
+    // The commit this result is for, so a green run of an older commit is not mistaken for the one just pushed.
+    const headlineRun = firstWorkflow(result, (w) => w.runUrl === result.runUrl);
+    const sha = commitLink(repoKey, headlineRun, newestSha(workflows));
+    if (sha) sub.append(' · ', sha);
+    // Where it failed, linked straight to the failed job's log.
     const failed = firstWorkflow(result, (w) => w.color === 'red' && w.failure);
-    if (failed) sub.append(' · ', el('span', 'failure-text', failureText(failed.failure)));
+    if (failed) sub.append(' · ', tabLink('failure-text', failureText(failed.failure), failed.failure.url || failed.runUrl, `Open the log of ${failed.failure.job}`));
     const lead = firstWorkflow(result, (w) => w.color === 'yellow') || firstWorkflow(result, (w) => w.color === 'red') || (workflows.length === 1 ? workflows[0] : null);
     // Step lights for the workflow that is actually running (one waiting for approval has no steps yet).
     const live = firstWorkflow(result, (w) => w.color === 'yellow' && w.progress && w.progress.length);
@@ -691,7 +726,7 @@ function createRepoItem(entry) {
     expand.type = 'button';
     expand.dataset.focusKey = `${id}|expand`;
     expand.setAttribute('aria-expanded', String(expanded));
-    expand.setAttribute('aria-label', `${expanded ? 'Hide' : 'Show'} the workflows of ${repoKey}${branch !== 'all' ? ` (${branch})` : ''}`);
+    expand.setAttribute('aria-label', `${expanded ? 'Hide' : 'Show'} the workflows of ${described}`);
     expand.title = expanded ? 'Hide workflows' : `Show ${workflows.length} workflow${workflows.length === 1 ? '' : 's'}`;
     expand.appendChild(icon('chevron'));
     if (workflows.length > 1) expand.appendChild(el('span', 'expand-count', String(workflows.length)));
@@ -717,7 +752,9 @@ async function toggleExpanded(id) {
 /** The expanded part of a card: what triggered the latest run, then every workflow with its history. */
 function repoDetail(entry, result) {
   const id = RepoOrder.idOf(entry);
-  const [owner, repoName] = RepoOrder.label(entry).repo.split('/');
+  const { repo: repoKey, branch, workflow: pinned } = RepoOrder.label(entry);
+  const [owner, repoName] = repoKey.split('/');
+  const newest = newestSha(result.workflows || []);
   const detail = el('div', 'repo-detail');
   const headline = (result.workflows || []).find((w) => w.runUrl === result.runUrl) || result.workflows[0];
 
@@ -753,6 +790,8 @@ function repoDetail(entry, result) {
     const state = el('span', 'workflow-state', w.message);
     const timing = timingSpan(w);
     if (timing.textContent) state.append(' · ', timing);
+    const sha = commitLink(repoKey, w, w.ignored ? null : newest);
+    if (sha) state.append(' · ', sha);
     row.appendChild(state);
 
     const tools = el('span', 'workflow-tools');
@@ -772,15 +811,24 @@ function repoDetail(entry, result) {
         tools.appendChild(b);
       }
     }
-    // On: the workflow counts toward the repository's status. Off: listed, dimmed, never red or yellow.
-    const sw = el('input', 'switch');
-    sw.type = 'checkbox';
-    sw.checked = !w.ignored;
-    sw.dataset.focusKey = `${id}|count|${key}`;
-    sw.title = w.ignored ? 'Ignored: does not affect the status. Click to count it again.' : 'Counts toward the status. Click to ignore it.';
-    sw.setAttribute('aria-label', `Count ${w.name} toward the status`);
-    sw.addEventListener('change', () => setWorkflowIgnored(id, key, !sw.checked));
-    tools.appendChild(sw);
+    // A card of its own for just this workflow (the same repository and branch).
+    if (!pinned && w.workflowId) {
+      const b = iconButton('pin', `Add a card for only ${w.name}`, 'btn-run btn-pin', () => pinWorkflow(repoKey, branch, w));
+      b.dataset.focusKey = `${id}|pin|${key}`;
+      tools.appendChild(b);
+    }
+    // On: the workflow counts toward the repository's status. Off: listed, dimmed, never red or yellow. A pinned
+    // card's one workflow always counts, so it has no switch.
+    if (!pinned) {
+      const sw = el('input', 'switch');
+      sw.type = 'checkbox';
+      sw.checked = !w.ignored;
+      sw.dataset.focusKey = `${id}|count|${key}`;
+      sw.title = w.ignored ? 'Ignored: does not affect the status. Click to count it again.' : 'Counts toward the status. Click to ignore it.';
+      sw.setAttribute('aria-label', `Count ${w.name} toward the status`);
+      sw.addEventListener('change', () => setWorkflowIgnored(id, key, !sw.checked));
+      tools.appendChild(sw);
+    }
     row.appendChild(tools);
 
     if (w.color === 'yellow' && w.progress && w.progress.length) {
@@ -860,6 +908,23 @@ function historyStrip(w) {
   strip.setAttribute('role', 'img');
   strip.setAttribute('aria-label', strip.title);
   return strip;
+}
+
+/** Add a card that watches only this workflow, on the same repository and branch, right after the card it came from. */
+async function pinWorkflow(repoKey, branch, w) {
+  const id = RepoOrder.makeId(repoKey, branch, w.workflowId);
+  const name = w.name || 'Workflow';
+  if (currentData.repos.some((r) => RepoOrder.idOf(r) === id)) {
+    showToast(`${name} already has its own card`);
+    return;
+  }
+  const from = currentData.repos.findIndex((r) => RepoOrder.idOf(r) === RepoOrder.makeId(repoKey, branch));
+  const next = { id, repo: repoKey, branch, workflow: { id: w.workflowId, name }, enabled: true };
+  currentData.repos.splice(from < 0 ? currentData.repos.length : from + 1, 0, next);
+  await StorageManager.saveRepos(currentData.repos);
+  showToast(`Added a card for ${name}`, 'success');
+  renderUI();
+  refreshNow();
 }
 
 /**
@@ -1001,6 +1066,10 @@ function resetBranchSelect() {
   branchSelect.disabled = true;
   document.getElementById('addRepoBtn').disabled = true;
   currentBranches = [];
+  const workflowSelect = document.getElementById('workflowSelect');
+  workflowSelect.replaceChildren(new Option('All workflows', ''));
+  workflowSelect.disabled = true;
+  currentWorkflows = [];
 }
 
 function resetRepoSelect(placeholder) {
@@ -1211,8 +1280,22 @@ async function handleRepoSelection() {
   const addBtn = document.getElementById('addRepoBtn');
   setAddStatus('Loading branches...');
   const [owner, repo] = repoKey.split('/');
-  const { branches, source } = await GitHubAPI.fetchBranches(owner, repo, currentData.token);
+  const [{ branches, source }, workflows] = await Promise.all([
+    GitHubAPI.fetchBranches(owner, repo, currentData.token),
+    GitHubAPI.listWorkflows(owner, repo, currentData.token)
+  ]);
   if (document.getElementById('repoSelect').value !== repoKey) return; // another repository was chosen meanwhile
+
+  // "All workflows" is always possible; a specific one only when GitHub listed them.
+  currentWorkflows = workflows || [];
+  const workflowSelect = document.getElementById('workflowSelect');
+  workflowSelect.replaceChildren(new Option('All workflows', ''), ...currentWorkflows.map((w) => {
+    const option = new Option(w.name, String(w.id));
+    option.title = w.path;
+    return option;
+  }));
+  workflowSelect.value = '';
+  workflowSelect.disabled = currentWorkflows.length === 0;
 
   currentBranches = branches;
   branchSelect.replaceChildren(new Option('All branches', 'all'), ...branches.map((branch) => new Option(branch, branch)));
@@ -1246,6 +1329,7 @@ async function addRepo() {
   const branchSelect = document.getElementById('branchSelect');
   const repoKey = repoSelect.value;
   const branch = branchSelect.value;
+  const workflow = currentWorkflows.find((w) => String(w.id) === document.getElementById('workflowSelect').value) || null;
 
   if (!repoKey || !branch) {
     return;
@@ -1256,16 +1340,17 @@ async function addRepo() {
     return;
   }
 
-  // Create unique ID for this repo+branch combination
-  const id = `${repoKey}:${branch}`;
+  // One card per repository, branch and (optional) pinned workflow.
+  const id = RepoOrder.makeId(repoKey, branch, workflow && workflow.id);
+  const next = { id, repo: repoKey, branch, enabled: true };
+  if (workflow) next.workflow = { id: workflow.id, name: workflow.name };
 
-  // Check if this exact repo+branch combination already exists
   if (currentData.repos.some((r) => RepoOrder.idOf(r) === id)) {
-    alert(`Repository ${repoKey} with branch "${branch}" is already being monitored`);
+    alert(`${RepoOrder.describe(next)} is already being monitored`);
     return;
   }
 
-  currentData.repos.push({ id, repo: repoKey, branch, enabled: true });
+  currentData.repos.push(next);
   await StorageManager.saveRepos(currentData.repos);
 
   // Remember the owner (most recent first) for the Owner field; it stays filled in for the next addition.
@@ -1277,7 +1362,7 @@ async function addRepo() {
   // Reset the repository and branch choice; the owner and its repository list stay, and so does the open form.
   repoSelect.value = '';
   resetBranchSelect();
-  setAddStatus(`Added ${repoKey}${branch === 'all' ? '' : ` (${branch})`}`, 'success');
+  setAddStatus(`Added ${RepoOrder.describe(next)}`, 'success');
 
   renderUI();
 
@@ -1316,8 +1401,7 @@ async function toggleRepoEnabled(id) {
  */
 async function removeRepo(id) {
   const entry = currentData.repos.find((r) => RepoOrder.idOf(r) === id);
-  const { repo, branch } = RepoOrder.label(entry);
-  if (!confirm(`Remove ${repo}${branch === 'all' ? '' : ` (${branch})`}?`)) {
+  if (!confirm(`Remove ${RepoOrder.describe(entry)}?`)) {
     return;
   }
 

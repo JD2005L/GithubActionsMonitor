@@ -31,6 +31,9 @@ FAST WHEN IT MATTERS, QUIET WHEN IT DOESN'T
 
 MADE FOR REAL PROJECTS
 • Watch all branches or a specific branch, and the same repository on several branches.
+• Pin one workflow on one branch to its own card, for the run you are waiting on.
+• Every result shows the commit it is for, so a green run of an older commit is not mistaken for yours.
+• A failure links straight to the failed job's log.
 • Pause and resume repositories you are not working on.
 • Drag repositories into your own order, or sort by name, recent activity or status.
 • Pick an owner, then choose from all of its repositories (private ones included). Owners you use are remembered.
@@ -142,7 +145,7 @@ export function storeListing(version) {
           kind: 'text',
           limit: 1000,
           value:
-            "https://api.github.com/*: reads workflow runs (GET /repos/{owner}/{repo}/actions/runs), the jobs of running and failed runs (to light a light per finished step and name the failed one), a failed job's log once (GitHub redirects it to its log storage; the extension keeps only the few lines that say why it failed), branches, the list of repositories the user can access and the repositories of an owner the user picks, through GitHub's official REST API, using the user's own token. It is used to show workflow status and to list an owner's repositories when adding one. It only reads, unless the user turns on run controls in the settings and then clicks re-run or cancel on a run (POST .../rerun-failed-jobs or .../cancel). With run controls on, the settings page checks a fine-grained token's permission by asking to cancel an already finished run, which GitHub declines (409 with the permission, 403 without); nothing is cancelled. No other hosts are contacted.",
+            "https://api.github.com/*: reads workflow runs (of a repository, or of one workflow the user pins), the jobs of running and failed runs (to light a light per finished step and name the failed one), a failed job's log once (the extension keeps only the few lines that say why it failed), branches, a repository's workflows, the repositories the user can access and those of an owner the user picks, through GitHub's REST API with the user's own token. It is used to show workflow status and to list an owner's repositories when adding one. It only reads, unless the user turns on run controls in the settings and then clicks re-run or cancel on a run (POST .../rerun-failed-jobs or .../cancel). With run controls on, the settings page checks a fine-grained token's permission by asking to cancel an already finished run, which GitHub declines (409 with the permission, 403 without); nothing is cancelled. No other hosts are contacted.",
         },
         { label: 'Are you using remote code?', required: true, kind: 'choice', value: 'No, I am not using Remote code', note: 'All code ships in the package. No eval, remote scripts or WebAssembly.' },
         {

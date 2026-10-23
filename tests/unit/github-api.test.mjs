@@ -147,3 +147,33 @@ describe('listOwnerRepos', () => {
     assert.match(invalid.error, /not a valid/);
   });
 });
+
+describe('pinned workflows', () => {
+  const reply = (body) => ({ status: 200, ok: true, headers: { get: () => null }, json: async () => body });
+
+  it('reads only the pinned workflow’s runs, from its own endpoint, on the chosen branch', async () => {
+    const calls = [];
+    const api = load(async (url) => {
+      calls.push(url);
+      return reply({ workflow_runs: [run(7, 'completed', 'failure'), run(7, 'completed', 'success')] });
+    });
+    const result = await api.fetchRepoStatus('o', 'r', 't', 'main', null, [], 7);
+    assert.equal(calls[0], 'https://api.github.com/repos/o/r/actions/workflows/7/runs?per_page=10&branch=main');
+    assert.equal(result.color, 'red');
+    assert.equal(result.workflows.length, 1);
+  });
+
+  it('lists a repository’s active workflows by name for the add form', async () => {
+    const api = load(async () => reply({
+      workflows: [
+        { id: 3, name: 'Release', path: '.github/workflows/release.yml', state: 'active' },
+        { id: 1, name: 'ci', path: '.github/workflows/ci.yml', state: 'active' },
+        { id: 2, name: 'Old', path: '.github/workflows/old.yml', state: 'disabled_manually' },
+      ],
+    }));
+    const workflows = await api.listWorkflows('o', 'r', 't');
+    assert.deepEqual(JSON.parse(JSON.stringify(workflows)), [{ id: 1, name: 'ci', path: '.github/workflows/ci.yml' }, { id: 3, name: 'Release', path: '.github/workflows/release.yml' }]);
+    const failing = load(async () => ({ ok: false, status: 403 }));
+    assert.equal(await failing.listWorkflows('o', 'r', 't'), null);
+  });
+});

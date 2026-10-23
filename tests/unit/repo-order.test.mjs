@@ -67,3 +67,22 @@ describe('RepoOrder.move', () => {
     assert.equal(RepoOrder.moveBy(list, 'a/3:all', 1), null);
   });
 });
+
+describe('pinned workflows', () => {
+  const pinned = (repo, branch, id, name) => ({ id: RepoOrder.makeId(repo, branch, id), repo, branch, enabled: true, workflow: { id, name } });
+
+  it('gets an id and a name of its own', () => {
+    assert.equal(RepoOrder.makeId('me/api', 'main'), 'me/api:main');
+    assert.equal(RepoOrder.makeId('me/api', 'main', 42), 'me/api:main:wf42');
+    assert.equal(RepoOrder.describe(entry('me/api')), 'me/api');
+    assert.equal(RepoOrder.describe(entry('me/api', 'main')), 'me/api (main)');
+    assert.equal(RepoOrder.describe(pinned('me/api', 'all', 42, 'CI')), 'me/api (CI)');
+    assert.equal(RepoOrder.describe(pinned('me/api', 'main', 42, 'CI')), 'me/api (main, CI)');
+    assert.equal(RepoOrder.label('me/api:all').workflow, null);
+  });
+
+  it('sorts by name after every workflow of the same repository and branch', () => {
+    const list = [pinned('me/api', 'main', 2, 'Lint'), pinned('me/api', 'main', 1, 'deploy'), entry('me/api', 'main'), entry('me/api')];
+    assert.deepEqual(ids(RepoOrder.sort(list, {}, 'name')), ['me/api:all', 'me/api:main', 'me/api:main:wf1', 'me/api:main:wf2']);
+  });
+});

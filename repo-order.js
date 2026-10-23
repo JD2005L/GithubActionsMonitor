@@ -15,10 +15,24 @@ const RepoOrder = {
     return typeof entry === 'string' ? true : entry.enabled !== false;
   },
 
+  /** What an entry watches: repository, branch ('all' for every branch) and pinned workflow ({id, name}, or null). */
   label(entry) {
     const repo = typeof entry === 'string' ? entry.split(':')[0] : entry.repo;
     const branch = typeof entry === 'string' ? 'all' : entry.branch;
-    return { repo, branch };
+    const workflow = typeof entry === 'string' || !entry.workflow ? null : entry.workflow;
+    return { repo, branch, workflow };
+  },
+
+  /** The id of a repository, branch and optional pinned workflow ("owner/repo:main", "owner/repo:main:wf123"). */
+  makeId(repo, branch, workflowId = null) {
+    return workflowId ? `${repo}:${branch}:wf${workflowId}` : `${repo}:${branch}`;
+  },
+
+  /** "owner/repo", "owner/repo (main)", "owner/repo (main, CI)": for confirmations and accessible names. */
+  describe(entry) {
+    const { repo, branch, workflow } = this.label(entry);
+    const parts = [branch !== 'all' ? branch : '', workflow ? workflow.name : ''].filter(Boolean);
+    return parts.length ? `${repo} (${parts.join(', ')})` : repo;
   },
 
   /** The newest start or update time across a result's workflows (ms), or null when nothing has run. */
@@ -41,8 +55,13 @@ const RepoOrder = {
     const repo = x.repo.localeCompare(y.repo, undefined, { sensitivity: 'base' });
     if (repo) return repo;
     // "All branches" before specific branches of the same repository.
-    if (x.branch === 'all' || y.branch === 'all') return (x.branch === 'all' ? 0 : 1) - (y.branch === 'all' ? 0 : 1);
-    return x.branch.localeCompare(y.branch, undefined, { sensitivity: 'base' });
+    if (x.branch !== y.branch) {
+      if (x.branch === 'all' || y.branch === 'all') return (x.branch === 'all' ? 0 : 1) - (y.branch === 'all' ? 0 : 1);
+      return x.branch.localeCompare(y.branch, undefined, { sensitivity: 'base' });
+    }
+    // Every workflow before a pinned one of the same repository and branch.
+    if (!x.workflow || !y.workflow) return (x.workflow ? 1 : 0) - (y.workflow ? 1 : 0);
+    return x.workflow.name.localeCompare(y.workflow.name, undefined, { sensitivity: 'base' });
   },
 
   byRecent(a, b, results) {

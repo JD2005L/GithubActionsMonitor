@@ -28,7 +28,7 @@
   <main>
     <p class="label">// Privacy policy</p>
     <h1>Privacy policy: GitHub Actions Monitor</h1>
-    <p><em>Last updated: 2026-10-13</em></p>
+    <p><em>Last updated: 2026-10-23</em></p>
     <p class="lead">GitHub Actions Monitor is a Chrome extension that shows the status of GitHub Actions workflow runs for repositories you choose: a colored toolbar icon, a popup with each workflow's latest run, and optional desktop notifications. This policy explains what it handles and where that data goes.</p>
     <p class="lead"><strong>In short:</strong> the extension has no server and sends nothing to its developer or any third party. It talks only to GitHub's API, using your own token, and keeps its data in your browser. Its <a href="https://github.com/JD2005L/GithubActionsMonitor">source code</a> is public, so this can be checked.</p>
 
@@ -39,7 +39,7 @@
         <tbody>
           <tr><td>Your GitHub personal access token</td><td>You paste it into the settings page</td><td>To read workflow runs from GitHub's API.</td></tr>
           <tr><td>Your GitHub login name</td><td>GitHub's API, when you test or save a token</td><td>To confirm which account the token belongs to.</td></tr>
-          <tr><td>The repositories (and branches) you monitor</td><td>You</td><td>To know what to check.</td></tr>
+          <tr><td>The repositories you monitor, with their branch and, when you pin one, the workflow (its ID and name)</td><td>You</td><td>To know what to check.</td></tr>
           <tr><td>Owner names you added repositories from, and the last owner used</td><td>You</td><td>To offer them in the popup's Owner field.</td></tr>
           <tr><td>Workflow run details: workflow names, status, conclusion, branch, commit title and hash, pull request number, the event and the GitHub login that triggered the run, run links, start and finish times, recent runs per workflow, the steps of running and failed runs (names and states, for the step lights), the name of a failed run's failed job and step, and a few lines from that step's log that say why it failed (GitHub masks secrets in logs)</td><td>GitHub's API</td><td>To show status in the icon, popup and notifications.</td></tr>
           <tr><td>The address of the current tab, when you open the popup (or, while docked in the side panel, of the tab you switch to)</td><td>Chrome (the <code>activeTab</code> permission)</td><td>To offer the repository you are looking at. Kept only while the popup or side panel is open, never stored or sent.</td></tr>
@@ -61,7 +61,7 @@
 
     <section>
       <h2>Where data is sent</h2>
-      <p>Only to GitHub's API (<code>api.github.com</code>) over HTTPS, with your token in the <code>Authorization</code> header, to read workflow runs, the jobs of running and failed runs, a failed job's log (read once, to quote the lines that say why), branches, the repositories your token can see and an owner's repository list when you pick that owner in the popup. Only if you turn on run controls and click re-run or cancel does it ask GitHub to re-run or cancel that run. With run controls on, the settings page also checks that a fine-grained token can do this by asking GitHub to cancel a run that has already finished: GitHub declines, and its answer says whether the token has the permission. Nothing is cancelled. The extension has no backend server; no data is sent to its developer or to any other party. Data is never sold or used for advertising, credit or any purpose unrelated to the extension's single purpose. GitHub's privacy statement applies to data GitHub processes.</p>
+      <p>Only to GitHub's API (<code>api.github.com</code>) over HTTPS, with your token in the <code>Authorization</code> header, to read workflow runs, the jobs of running and failed runs, a failed job's log (read once, to quote the lines that say why), branches, a repository's workflows (when you pick that repository in the popup), the repositories your token can see and an owner's repository list when you pick that owner in the popup. Only if you turn on run controls and click re-run or cancel does it ask GitHub to re-run or cancel that run. With run controls on, the settings page also checks that a fine-grained token can do this by asking GitHub to cancel a run that has already finished: GitHub declines, and its answer says whether the token has the permission. Nothing is cancelled. The extension has no backend server; no data is sent to its developer or to any other party. Data is never sold or used for advertising, credit or any purpose unrelated to the extension's single purpose. GitHub's privacy statement applies to data GitHub processes.</p>
     </section>
 
     <section>

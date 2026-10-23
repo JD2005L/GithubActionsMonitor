@@ -62,7 +62,8 @@
         <div class="card"><h3>Every workflow counts</h3><p>The latest run of each workflow decides the status, so a failing CI is never hidden by a deploy that finished after it. Switch off noisy workflows; cancelled and skipped runs never raise false alarms.</p></div>
         <div class="card"><h3>Live run timers</h3><p>Running workflows count up as they go; finished ones show how long they took. Click any workflow to open its run.</p></div>
         <div class="card"><h3>Rate-limit safe</h3><p>When nothing changed, GitHub answers "not modified", which does not count against your API limit. The settings page shows live usage.</p></div>
-        <div class="card"><h3>Branches and pausing</h3><p>Watch all branches or a specific one, the same repository on several branches, and pause the ones you are not working on. On a repository's GitHub page, add it in one click.</p></div>
+        <div class="card"><h3>Branches, workflows and pausing</h3><p>Watch all branches or a specific one, pin a single workflow to its own card, and pause the ones you are not working on. On a repository's GitHub page, add it in one click.</p></div>
+        <div class="card"><h3>The commit it is for</h3><p>Each result shows its commit, so a green run of an older commit is never mistaken for the one you just pushed. A failure links straight to the failed job's log.</p></div>
         <div class="card"><h3>Alerts and reviews</h3><p>Optional desktop notifications when a workflow starts, succeeds or fails, naming the failed step. Runs waiting for a deployment review are marked, with a link to review them.</p></div>
         <div class="card"><h3>Read-only by default</h3><p>A read-only token is all it needs. Re-run and cancel buttons appear only if you switch them on.</p></div>
       </div>
@@ -107,7 +108,7 @@
         <li><strong>Choose features (optional).</strong> The number on the icon, notifications, and whether to show re-run and cancel buttons. They come first because re-run and cancel decide the token's permission, so you only ever make one token. Leave them off to stay read-only.</li>
         <li><strong>Create the token.</strong> Click <strong>Create a read-only token on GitHub</strong> (or <strong>Create a token with re-run and cancel</strong>). GitHub's form opens with the name, a 90-day expiry and <strong>Actions: Read-only</strong> (or <strong>Read and write</strong>) already set. Under <strong>Repository access</strong> choose <strong>All repositories</strong> (or the ones to monitor), then <strong>Generate token</strong>.</li>
         <li><strong>Paste it and click Save Token.</strong> The extension checks it right away: account, token type, how many repositories it can see, remaining API requests.</li>
-        <li><strong>Add repositories.</strong> Click the toolbar icon, then <strong>+ Add</strong>: type an owner (your username or an organization), pick the repository and a branch (or "All branches") and click <strong>Add Repo</strong>. On a repository's GitHub page, just click <strong>Add it</strong>.</li>
+        <li><strong>Add repositories.</strong> Click the toolbar icon, then <strong>+ Add</strong>: type an owner (your username or an organization), pick the repository and a branch (or "All branches"), optionally one workflow, and click <strong>Add Repo</strong>. On a repository's GitHub page, just click <strong>Add it</strong>.</li>
       </ol>
       <p style="margin-top:14px">For an organization's repositories, choose the organization as the token's <strong>Resource owner</strong>. Some organizations must approve fine-grained tokens before they work. A classic token also works, but its <code>repo</code> scope grants far more access than needed.</p>
     </section>

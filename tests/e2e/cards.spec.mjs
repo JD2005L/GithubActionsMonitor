@@ -44,8 +44,13 @@ test('compact cards: one-line state with the failed step, workflows and run cont
     await page.getByRole('button', { name: 'Refresh Now' }).click();
     const card = (repo) => page.locator('.repo-item', { has: page.locator('.repo-name', { hasText: repo }) });
 
-    // Collapsed: the state in one line, with where the failure happened; the rest is in the hover text.
-    await expect(card('octo-dev/api').locator('.repo-sub')).toHaveText(/^1 failing · Test › npm test · took 3m 48s$/);
+    // Collapsed: the state in one line, with the commit it is for and where the failure happened (linked to the
+    // failed job's log); the rest is in the hover text. CI last ran on an older commit than Deploy, so its commit
+    // is marked older.
+    await expect(card('octo-dev/api').locator('.repo-sub')).toHaveText(/^1 failing · cc623a9 · Test › npm test · took 3m 48s$/);
+    await expect(card('octo-dev/api').locator('.repo-sub .commit-sha')).toHaveAttribute('href', 'https://github.com/octo-dev/api/commit/cc623a9');
+    await expect(card('octo-dev/api').locator('.repo-sub .commit-sha')).toHaveClass(/is-older/);
+    await expect(card('octo-dev/api').locator('.repo-sub .failure-text')).toHaveAttribute('href', 'https://github.com/octo-dev/api/actions/runs/11/job/112');
     await expect(card('octo-dev/api').locator('.repo-sub')).toHaveAttribute('title', /CI: Failed \(Test › npm test\)/);
     await expect(card('octo-dev/api').locator('.repo-sub')).toHaveAttribute('title', /“Add rate limiting” · #482 · @maya · pull request/);
     await expect(page.locator('.workflow-row')).toHaveCount(0);
@@ -59,7 +64,7 @@ test('compact cards: one-line state with the failed step, workflows and run cont
     const api = card('octo-dev/api');
     await expect(api.locator('.context-title')).toHaveText('Add rate limiting');
     await expect(api.getByRole('link', { name: '#482' })).toHaveAttribute('href', 'https://github.com/octo-dev/api/pull/482');
-    await expect(api.locator('.context-sha')).toHaveText('0000011');
+    await expect(api.locator('.context-sha')).toHaveText('cc623a9');
     await expect(api.locator('.workflow-row')).toHaveCount(2);
     const ci = api.locator('.workflow-row', { hasText: 'CI' });
     await expect(ci.locator('.history')).toHaveAttribute('aria-label', 'Last 3 runs (newest right): 2 failed, 1 passed');

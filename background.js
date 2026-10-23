@@ -1,7 +1,7 @@
 // Background service worker for GitHub Actions Monitor
 // Handles periodic polling, adaptive polling, icon updates, and data storage
 
-importScripts('github-api.js', 'icon-manager.js', 'storage-manager.js');
+importScripts('github-api.js', 'icon-manager.js', 'storage-manager.js', 'repo-order.js');
 
 const RATE_LIMIT_PAUSE_MINUTES = 10;
 const ALARM_NAME = 'github-actions-poll';
@@ -223,25 +223,27 @@ async function createStatusNotification(repoKey, newResult, oldResult) {
     return;
   }
 
-  // Determine notification title and message
+  // Determine notification title and message. The card's name, not its id: "owner/repo (main, CI)".
+  const entry = (data.repos || []).find((r) => RepoOrder.idOf(r) === repoKey);
+  const name = entry ? RepoOrder.describe(entry) : repoKey;
   let title = '';
   let message = '';
 
   if (newColor === 'green') {
     title = 'Workflow Succeeded';
-    message = `${repoKey}\n${newResult.workflowName || 'Workflow'} completed successfully`;
+    message = `${name}\n${newResult.workflowName || 'Workflow'} completed successfully`;
   } else if (newColor === 'red') {
     title = 'Workflow Failed';
     // "CI failed", plus the repository's state only when it adds something ("CI failed: 2 failing, 1 running").
     const state = newResult.message && !/^(1 failing|failed)$/i.test(newResult.message) ? `: ${newResult.message}` : '';
-    message = `${repoKey}\n${newResult.workflowName || 'Workflow'} failed${state}`;
+    message = `${name}\n${newResult.workflowName || 'Workflow'} failed${state}`;
     const failed = (newResult.workflows || []).find((w) => w.color === 'red' && !w.ignored && w.failure);
     if (failed) message += `\nFailed at ${failed.failure.job}${failed.failure.step ? ` > ${failed.failure.step}` : ''}`;
     // The first line that says why, when the log named one.
     if (failed && failed.failure.errors && failed.failure.errors.length) message += `\n${failed.failure.errors[0]}`;
   } else if (newColor === 'yellow') {
     title = 'Workflow Started';
-    message = `${repoKey}\n${newResult.workflowName || 'Workflow'} is now ${newResult.message.toLowerCase()}`;
+    message = `${name}\n${newResult.workflowName || 'Workflow'} is now ${newResult.message.toLowerCase()}`;
   }
 
   // Create the notification with colored icon
@@ -289,9 +291,11 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
     const data = await StorageManager.getData();
     const result = data.lastResults[repoKey];
 
-    if (result && result.runUrl) {
-      // Open the workflow run in a new tab
-      chrome.tabs.create({ url: result.runUrl });
+    // A failure opens the failed job's log (one click less than the run page); anything else opens the run.
+    const failed = result && result.color === 'red' ? (result.workflows || []).find((w) => w.color === 'red' && !w.ignored && w.failure && w.failure.url) : null;
+    const url = failed ? failed.failure.url : result && result.runUrl;
+    if (url) {
+      chrome.tabs.create({ url });
     }
   }
 
@@ -430,8 +434,10 @@ async function pollAllRepos() {
     }
 
     try {
-      const ignored = typeof repoEntry === 'string' ? [] : repoEntry.ignored || [];
-      const result = await GitHubAPI.fetchRepoStatus(owner, repo, token, branch, cache, ignored);
+      // A pinned workflow is the card's only workflow, so nothing on it is ignored.
+      const workflowId = typeof repoEntry === 'string' ? null : repoEntry.workflow?.id ?? null;
+      const ignored = typeof repoEntry === 'string' || workflowId ? [] : repoEntry.ignored || [];
+      const result = await GitHubAPI.fetchRepoStatus(owner, repo, token, branch, cache, ignored, workflowId);
       // Copies: the ETag cache holds these same workflow objects, and the failure details and step lights added
       // below belong to this poll's results, not to the cache.
       if (result.workflows) result.workflows = result.workflows.map((w) => ({ ...w }));

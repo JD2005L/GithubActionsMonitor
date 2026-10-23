@@ -20,7 +20,9 @@ Free and open source (GPL-3.0). No server, no analytics: it talks only to GitHub
 - **Why it failed, without opening GitHub.** A failed workflow names its failed job and step ("Test › npm test")
   and quotes the lines from its log that say why ("Expected: 429 / Received: 200").
 - **Compact cards.** One card per repository and branch, with summary filters (failing, running, awaiting review,
-  passing). Expand a card for every workflow, its last ten runs, and the commit, pull request and author behind it.
+  passing). The state line shows the commit the result is for, so a green run of an older commit is not mistaken
+  for the one you just pushed (an older commit than the card's newest run is underlined dashed), and a failure
+  links straight to the failed job's log. Expand a card for every workflow, its last ten runs, and the commit, pull request and author behind it.
 - **Step lights and live timers.** A running workflow lights up step by step; running ones count up, finished ones
   show how long they took.
 - **Every workflow counts.** The latest run of *each* workflow decides the status, so a failing CI is never hidden
@@ -29,7 +31,8 @@ Free and open source (GPL-3.0). No server, no analytics: it talks only to GitHub
 - **Keep it in view.** Dock it in Chrome's side panel, pop it out into its own window, or keep it on top of every
   other window (Chrome's picture-in-picture window).
 - **Add the repository you are looking at** in one click from its GitHub page, or pick any owner's repository,
-  private ones included. Watch all branches or a specific one; pause the ones you are not working on.
+  private ones included. Watch all branches or a specific one, pin a single workflow to its own card, and pause
+  the ones you are not working on.
 - **Desktop notifications** (optional) when a workflow starts, succeeds or fails, naming the failed step.
 - **Re-run and cancel** (optional, off by default) from the expanded card.
 - **Rate-limit safe.** Every check is a conditional request; when nothing changed, GitHub answers "304 Not
@@ -62,8 +65,9 @@ needs, and the settings page opens GitHub's form with that already filled in.
    repositories, choose the organization as the **Resource owner**; some organizations must approve tokens first.
 5. Click **Generate token**, copy it, paste it into the settings page and click **Save Token**. The extension checks
    it right away: account, token type, how many repositories it can see and the API requests left.
-6. Click the toolbar icon, then **+ Add**: type an owner, pick a repository and a branch (or "All branches") and
-   click **Add Repo**. On a repository's GitHub page, click **Add it** instead.
+6. Click the toolbar icon, then **+ Add**: type an owner, pick a repository, a branch (or "All branches") and
+   optionally one workflow (or "All workflows"), and click **Add Repo**. On a repository's GitHub page, click
+   **Add it** instead.
 
 Token types it accepts:
 
@@ -85,6 +89,8 @@ permission and 403 without, so nothing is cancelled).
 | See each workflow | Click the chevron on a card: workflows, history, run context |
 | Open a run, or the failed job's log | Click the repository name (headline run), a workflow name, or the failed step |
 | Stop a workflow from affecting the status | Expand the card and switch the workflow off |
+| Watch only one workflow | Pick it in the add form's **Workflow** field, or expand a card and click the pin next to it: it gets a card of its own |
+| Check which commit a result is for | The short hash on the card's state line (click it to open the commit) |
 | Re-run failed jobs, cancel a run | Expanded card, ↻ or ■ (after turning run controls on in Settings) |
 | Add the repository open in the tab | Open the popup on its GitHub page, click **Add it** |
 | Check now | **Refresh Now** in the popup |
