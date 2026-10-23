@@ -19,7 +19,14 @@ const root = join(import.meta.dirname, '..', '..');
 const { version } = JSON.parse(readFileSync(join(root, 'manifest.json'), 'utf8'));
 const OUT = join(root, 'release', `chrome-web-store-${version}`, 'images', 'screenshots');
 
-const run = MockGitHub.run;
+// Runs of one push share its commit, as on GitHub: the hash is derived from the commit title, so cards do not
+// mark a workflow's commit as older when it ran on the same push.
+const commitOf = (title = 'Update') => {
+  let h = 2166136261;
+  for (const c of title) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
+  return (h >>> 0).toString(16).padStart(8, '0').slice(0, 7);
+};
+const run = (fields) => MockGitHub.run({ sha: commitOf(fields.title), ...fields });
 // The failed CI's log: the lines that say why are quoted in the expanded card and the alert.
 const CI_LOG = [
   '2026-10-12T10:00:00.0000000Z ##[group]Run npm test',
@@ -230,6 +237,8 @@ test('Chrome Web Store screenshots', async () => {
       await page.addStyleTag({ content: '.repo-list{max-height:none!important;overflow:visible!important}' });
       const container = await regionOf(page.locator('.container'));
       shots.overview = { image: await capture(page, container), ...container };
+      // The popup on its own (2x), for product pages that show it without a slide around it.
+      writeFileSync(join(OUT, '..', `popup-${Math.round(container.width)}x${Math.round(container.height)}.png`), shots.overview.image);
 
       // Why it failed: the failing repository expanded.
       await setSync(ext, { expanded: ['northwind-labs/api:main'] });
