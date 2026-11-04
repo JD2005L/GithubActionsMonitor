@@ -1,8 +1,10 @@
 // The Chrome Web Store submission, field by field, in the Developer Dashboard's order. Single source of truth for
-// release/chrome-web-store-<version>/SUBMIT.html (copy buttons) and SUBMIT.md, written by scripts/store-assets.mjs.
+// release/chrome-web-store-<version>/SUBMIT.html (copy buttons) and SUBMIT.md, written by scripts/store-submit.mjs.
 //
 // Field kinds: text (paste `value`, `limit` = the dashboard's character limit), choice (pick `value`), file (upload
 // `files`, relative to the submission folder), checks (tick exactly the options marked true), info (nothing to enter).
+//   (A file field's optional `revision` says what its images show; change it when they change in a way the
+//   listing history's thumbnail comparison cannot see, such as a renamed label, so SUBMIT.html marks them.)
 
 // Public pages on levac.net: the product page and privacy policy URLs registered with the store listing.
 const SITE = 'https://levac.net/actions-monitor/';
@@ -77,6 +79,7 @@ export function storeListing(version) {
           label: 'Screenshots',
           required: true,
           kind: 'file',
+          revision: 'Named Actions CI Monitor (popup header and caption)',
           files: ['images/screenshots/1-every-pipeline.png', 'images/screenshots/2-why-it-failed.png', 'images/screenshots/3-deployments-live.png', 'images/screenshots/4-alerts-and-actions.png', 'images/screenshots/5-keep-it-in-view.png'],
           note: 'Replace the existing screenshots with all five, in this order. Each is 1280×800, 24-bit PNG, made from a made-up sample account. The desktop alert in screenshot 4 is drawn (Chrome notifications cannot be captured) with the extension’s exact notification text.',
         },

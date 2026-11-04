@@ -154,7 +154,8 @@ npx playwright install chromium   # once, for the browser tests
 npm test              # unit tests (node --test): status logic, conditional requests, ordering
 npm run test:e2e      # browser tests: dist/ in Chromium against a mock GitHub API
 npm run check         # both
-npm run package       # Chrome Web Store folder: release/chrome-web-store-<version>/ (zip, listing, screenshots)
+npm run package       # Chrome Web Store folder: release/chrome-web-store-<version>/ (zip, listing, screenshots;
+                      # SUBMIT.html marks the fields changed since the version in the dashboard)
 ```
 
 - `scripts/build.mjs` copies exactly the shipped files into `dist/` (and, with `--store`, zips them).

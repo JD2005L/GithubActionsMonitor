@@ -10,7 +10,7 @@
     "test": "node --test \"tests/unit/*.test.mjs\"",
     "test:e2e": "node scripts/build.mjs && playwright test",
     "check": "npm test && npm run test:e2e",
-    "package": "node scripts/build.mjs --store && node scripts/store-assets.mjs && npm run package:screenshots",
+    "package": "node scripts/build.mjs --store && node scripts/store-assets.mjs && npm run package:screenshots && node scripts/store-submit.mjs",
     "package:screenshots": "node scripts/build.mjs && playwright test -c playwright.store.config.mjs"
   },
   "devDependencies": {

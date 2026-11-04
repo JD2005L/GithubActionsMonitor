@@ -1,19 +1,20 @@
 // Collects everything the Chrome Web Store submission needs into one folder:
 //   release/chrome-web-store-<version>/
 //     1-upload-this.zip              the package (built by `node scripts/build.mjs --store`)
-//     SUBMIT.html / SUBMIT.md        every dashboard field under its exact label, ready to paste (Copy buttons in .html)
+//     SUBMIT.html / SUBMIT.md        every dashboard field under its exact label, ready to paste (Copy buttons in .html),
+//                                    each marked with the release it last changed in (written last, by store-submit.mjs)
 //     PRIVACY.md                     the privacy policy (also published on levac.net)
 //     images/store-icon-128.png      store icon: the extension's own 128px icon (icons/icon128.png, see scripts/icons.mjs)
 //     images/promo-tile-440x280.png  small promo tile (rendered here)
 //     images/screenshots/            five 1280x800 screenshots (sample data), made by tests/store/screenshots.store.mjs
 // Run through `npm run package`, after the store build.
-import { copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 import { brandSvg } from './brand.mjs';
-import { PRODUCT, storeListing } from './store-listing.mjs';
-import { checkLimits, renderHtml, renderMarkdown } from './submit-page.mjs';
+import { storeListing } from './store-listing.mjs';
+import { checkLimits } from './submit-page.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const { version } = JSON.parse(readFileSync(join(root, 'manifest.json'), 'utf8'));
@@ -29,10 +30,9 @@ copyFileSync(join(root, 'PRIVACY.md'), join(out, 'PRIVACY.md'));
 copyFileSync(join(root, 'icons', 'icon128.png'), join(out, 'images', 'store-icon-128.png'));
 // images/screenshots/ is filled by `npm run package:screenshots` (part of `npm run package`).
 
-const tabs = storeListing(version);
-checkLimits(tabs);
-writeFileSync(join(out, 'SUBMIT.html'), renderHtml(tabs, version, PRODUCT));
-writeFileSync(join(out, 'SUBMIT.md'), renderMarkdown(tabs, version, PRODUCT));
+// Fail early if a listing value no longer fits its dashboard field. SUBMIT.html and SUBMIT.md are written last, by
+// scripts/store-submit.mjs, because marking what changed compares the screenshots, which do not exist yet.
+checkLimits(storeListing(version));
 
 const browser = await chromium.launch();
 try {
