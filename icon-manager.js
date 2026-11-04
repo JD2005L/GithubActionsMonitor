@@ -1,4 +1,4 @@
-// Icon manager for Actions Monitor
+// Icon manager for Actions CI Monitor
 // Dynamically generates and updates extension icon based on repository statuses
 
 const IconManager = {
@@ -160,7 +160,7 @@ const IconManager = {
     const running = results.filter((r) => r.color === 'yellow').length;
     const plural = (n, what) => `${n} repositor${n === 1 ? 'y' : 'ies'} ${what}`;
     const parts = [failing ? plural(failing, 'failing') : '', running ? plural(running, 'running') : ''].filter(Boolean);
-    const title = `Actions Monitor${parts.length ? `: ${parts.join(', ')}` : ''}`;
+    const title = `Actions CI Monitor${parts.length ? `: ${parts.join(', ')}` : ''}`;
     const text = (n) => (n > 99 ? '99+' : String(n));
     if (mode === 'off') return { text: '', color: null, title };
     if (failing) return { text: text(failing), color: 'red', title };

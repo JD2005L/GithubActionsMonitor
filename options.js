@@ -1,4 +1,4 @@
-// Options page controller for Actions Monitor
+// Options page controller for Actions CI Monitor
 
 let currentData = {
   token: null,
@@ -218,10 +218,10 @@ function renderTokenGuide() {
   const write = !!currentData.runControls;
   const kind = savedTokenKind();
   const params = new URLSearchParams({
-    name: 'Actions Monitor',
+    name: 'Actions CI Monitor',
     description: write
-      ? 'Workflow runs for the Actions Monitor Chrome extension, with re-run and cancel'
-      : 'Read-only access to workflow runs for the Actions Monitor Chrome extension',
+      ? 'Workflow runs for the Actions CI Monitor Chrome extension, with re-run and cancel'
+      : 'Read-only access to workflow runs for the Actions CI Monitor Chrome extension',
     expires_in: '90',
     actions: write ? 'write' : 'read'
   });

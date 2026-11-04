@@ -7,9 +7,9 @@
 // Public pages on levac.net: the product page and privacy policy URLs registered with the store listing.
 const SITE = 'https://levac.net/actions-monitor/';
 
-export const PRODUCT = 'Actions Monitor';
+export const PRODUCT = 'Actions CI Monitor';
 
-const DESCRIPTION = `Know the moment your build breaks, without keeping a GitHub tab open. Actions Monitor turns its toolbar icon into a live status light for all the repositories you care about.
+const DESCRIPTION = `Know the moment your build breaks, without keeping a GitHub tab open. Actions CI Monitor turns its toolbar icon into a live status light for all the repositories you care about.
 
 AT A GLANCE
 • Green: everything passed. Yellow: something is running. Red: something failed (flashing red/green when some passed and some failed). Gray: nothing to show yet.
@@ -48,7 +48,7 @@ PRIVATE, AND READ-ONLY BY DEFAULT
 
 More, including setup help: ${SITE}
 
-Actions Monitor is an independent project, not affiliated with or endorsed by GitHub, Inc. GitHub is a trademark of GitHub, Inc.`;
+Actions CI Monitor is an independent project, not affiliated with or endorsed by GitHub, Inc. GitHub is a trademark of GitHub, Inc.`;
 
 const TEST_INSTRUCTIONS = `Uses the reviewer's own GitHub account (free works); no test account.
 1. Right-click the icon > Options. Click Next, then "Create a read-only token on GitHub". Generate it, paste it, Save Token.

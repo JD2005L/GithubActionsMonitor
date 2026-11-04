@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Actions Monitor - Settings</title>
+  <title>Actions CI Monitor - Settings</title>
   <link rel="stylesheet" href="options.css">
 </head>
 <body>
   <div class="container">
     <header>
-      <h1><img src="icons/icon48.png" alt="" class="brand-icon">Actions Monitor <span class="subtitle">Settings</span></h1>
+      <h1><img src="icons/icon48.png" alt="" class="brand-icon">Actions CI Monitor <span class="subtitle">Settings</span></h1>
     </header>
 
     <div class="tabs" role="tablist" aria-label="Settings">
@@ -88,7 +88,7 @@
             <li>
               <a class="btn btn-secondary" target="_blank" rel="noopener noreferrer" href="https://github.com/settings/personal-access-tokens">Open your tokens on GitHub</a>
             </li>
-            <li>Click the token you use here (<strong>Actions Monitor</strong> if you made it from this page, or <strong>GitHub Actions Monitor</strong> if you made it with an older version), then <strong>Edit</strong>.</li>
+            <li>Click the token you use here (<strong>Actions CI Monitor</strong> if you made it from this page, or <strong>GitHub Actions Monitor</strong> if you made it with an older version), then <strong>Edit</strong>.</li>
             <li>Under <strong>Permissions</strong>, <strong>Repository permissions</strong>, set <strong>Actions</strong> to <strong>Read and write</strong>, then click <strong>Update</strong>.</li>
           </ol>
           <p data-kind="classic">Your saved token is a classic token: re-run and cancel work if it has the <code>repo</code> scope (<code>public_repo</code> covers public repositories only). <a target="_blank" rel="noopener noreferrer" href="https://github.com/settings/tokens">Check its scopes on GitHub</a>.</p>
@@ -110,7 +110,7 @@
         <ol class="token-steps">
           <li>
             <a id="createTokenLink" class="btn btn-primary" target="_blank" rel="noopener noreferrer"
-               href="https://github.com/settings/personal-access-tokens/new?name=Actions%20Monitor&amp;description=Read-only%20access%20to%20workflow%20runs%20for%20the%20Actions%20Monitor%20Chrome%20extension&amp;expires_in=90&amp;actions=read">Create a read-only token on GitHub</a>
+               href="https://github.com/settings/personal-access-tokens/new?name=Actions%20CI%20Monitor&amp;description=Read-only%20access%20to%20workflow%20runs%20for%20the%20Actions%20CI%20Monitor%20Chrome%20extension&amp;expires_in=90&amp;actions=read">Create a read-only token on GitHub</a>
             <span id="createTokenNote" class="step-note">Opens GitHub's form with the name, a 90-day expiry and <strong>Actions: Read-only</strong> already set (Metadata: Read-only is added automatically).</span>
           </li>
           <li>Under <strong>Repository access</strong>, choose <strong>All repositories</strong> (or only the ones you want to monitor). For an organization's repositories, pick it as the <strong>Resource owner</strong>; some organizations must approve tokens first.</li>
@@ -315,7 +315,7 @@
     <section class="settings-section how-it-works">
       <h2>📖 How It Works</h2>
       <p class="description">
-        Actions Monitor tracks the status of your GitHub Actions workflows across multiple repositories and provides real-time visual feedback through a dynamically colored extension icon.
+        Actions CI Monitor tracks the status of your GitHub Actions workflows across multiple repositories and provides real-time visual feedback through a dynamically colored extension icon.
       </p>
 
       <h3>🎨 Icon Colors</h3>

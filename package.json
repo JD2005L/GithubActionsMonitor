@@ -2,7 +2,7 @@
   "name": "github-actions-monitor",
   "private": true,
   "license": "GPL-3.0-only",
-  "description": "Development tooling for the Actions Monitor Chrome extension (the extension itself has no dependencies).",
+  "description": "Development tooling for the Actions CI Monitor Chrome extension (the extension itself has no dependencies).",
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",

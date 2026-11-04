@@ -45,7 +45,7 @@ svg{flex:none;filter:drop-shadow(0 6px 16px rgba(0,0,0,.5))}
 h1{font-size:27px;line-height:1.15;margin:0 0 10px;font-weight:700}
 p{margin:0;font-size:15px;line-height:1.4;color:#9198a1}
 b{color:#3fb950;font-weight:600}
-</style></head><body>${brandSvg(108)}<div><h1>Actions Monitor</h1><p>Your CI status, <b>live in the toolbar</b>. Every workflow, every repository.</p></div></body></html>`);
+</style></head><body>${brandSvg(108)}<div><h1>Actions CI Monitor</h1><p>Your CI status, <b>live in the toolbar</b>. Every workflow, every repository.</p></div></body></html>`);
   await page.screenshot({ path: join(out, 'images', 'promo-tile-440x280.png') });
 } finally {
   await browser.close();

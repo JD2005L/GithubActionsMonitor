@@ -1,4 +1,4 @@
-// Background service worker for Actions Monitor
+// Background service worker for Actions CI Monitor
 // Handles periodic polling, adaptive polling, icon updates, and data storage
 
 importScripts('github-api.js', 'icon-manager.js', 'storage-manager.js', 'repo-order.js');
@@ -43,7 +43,7 @@ chrome.windows.onRemoved.addListener(async (windowId) => {
 
 // Initialize storage on install
 chrome.runtime.onInstalled.addListener(async () => {
-  console.log('Actions Monitor installed');
+  console.log('Actions CI Monitor installed');
 
   // Initialize defaults using storage manager
   await StorageManager.initializeDefaults();

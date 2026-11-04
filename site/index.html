@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Actions Monitor: your CI status, live in the toolbar</title>
+  <title>Actions CI Monitor: your CI status, live in the toolbar</title>
   <meta name="description" content="Free, open-source Chrome extension that turns its toolbar icon into a live GitHub Actions status light for your repositories: why a run failed, step-by-step progress, deploys awaiting review, and alerts. No server.">
-  <meta property="og:title" content="Actions Monitor: your CI status, live in the toolbar">
+  <meta property="og:title" content="Actions CI Monitor: your CI status, live in the toolbar">
   <meta property="og:description" content="Know the moment a build breaks, without keeping a GitHub tab open. Free, open source, no server.">
   <meta property="og:image" content="https://jd2005l.github.io/GithubActionsMonitor/images/overview.png">
   <meta property="og:type" content="website">
@@ -19,7 +19,7 @@
 </head>
 <body>
   <header class="top">
-    <a class="brand" href="./"><img src="icon.svg" alt="">Actions Monitor</a>
+    <a class="brand" href="./"><img src="icon.svg" alt="">Actions CI Monitor</a>
     <nav aria-label="Site">
       <a href="#features">Features</a>
       <a href="#setup">Setup</a>
@@ -85,7 +85,7 @@
         <div>
           <p class="label">// Open source, no server</p>
           <h2>Nothing in between you and GitHub</h2>
-          <p>An extension that holds a GitHub token should be one you can inspect. Actions Monitor is open source under the GPL, and it has no backend at all: your browser talks to GitHub's API directly, with your own token.</p>
+          <p>An extension that holds a GitHub token should be one you can inspect. Actions CI Monitor is open source under the GPL, and it has no backend at all: your browser talks to GitHub's API directly, with your own token.</p>
           <p><a href="https://github.com/JD2005L/GithubActionsMonitor">Read the code on GitHub</a> · <a href="privacy.html">Privacy policy</a></p>
         </div>
         <ul class="ticks">
@@ -116,7 +116,7 @@
     <section id="install">
       <div class="band">
         <p class="label">// Install</p>
-        <h2>Get Actions Monitor</h2>
+        <h2>Get Actions CI Monitor</h2>
         <p>Install it from the Chrome Web Store. Prefer to run the code yourself? Clone the repository and load the folder in <code>chrome://extensions</code> with Developer mode on: there is no build step.</p>
         <div class="cta">
           <a class="button primary" href="https://chromewebstore.google.com/detail/github-actions-monitor/alipppinchgegflhlgogkhbjcigbkhkl">Add to Chrome</a>
@@ -133,7 +133,7 @@
       <details class="faq"><summary>Will it use up my API rate limit?</summary><div><p>Rarely. Every check is a conditional request, and when nothing changed GitHub answers "304 Not Modified", which does not count against the limit. Checks run at your interval (30 seconds to 5 minutes) and every 5 seconds only while something runs. Pause repositories you are not working on to save more.</p></div></details>
       <details class="faq"><summary>Does it work with organization and private repositories?</summary><div><p>Yes. Type the organization as the owner and pick from all of its repositories the token can see, private ones included. Create the token with the organization as its Resource owner; some organizations must approve fine-grained tokens first.</p></div></details>
       <details class="faq"><summary>Can it change anything in my repositories?</summary><div><p>Not unless you let it. With the recommended read-only token it can only read. Re-run and cancel buttons appear only after you turn them on in Settings and give the token write access to Actions.</p></div></details>
-      <details class="faq"><summary>Something isn't working</summary><div><p>The settings page's <strong>Test Token</strong> button shows what your token can see and whether it works, which answers most questions. Still stuck? <a href="https://github.com/JD2005L/GithubActionsMonitor/issues">Open an issue</a> or <a href="mailto:James@Levac.net?subject=Actions%20Monitor%20support">email James@Levac.net</a> with your Chrome version and what the settings page shows.</p></div></details>
+      <details class="faq"><summary>Something isn't working</summary><div><p>The settings page's <strong>Test Token</strong> button shows what your token can see and whether it works, which answers most questions. Still stuck? <a href="https://github.com/JD2005L/GithubActionsMonitor/issues">Open an issue</a> or <a href="mailto:James@Levac.net?subject=Actions%20CI%20Monitor%20support">email James@Levac.net</a> with your Chrome version and what the settings page shows.</p></div></details>
     </section>
 
     <section id="sponsor">
@@ -141,7 +141,7 @@
         <div class="band">
           <p class="label">// Support the project</p>
           <h2>Free, with no catch</h2>
-          <p>Actions Monitor has no paid tier and holds nothing back. If it saves you time, a donation keeps it maintained as GitHub and Chrome change.</p>
+          <p>Actions CI Monitor has no paid tier and holds nothing back. If it saves you time, a donation keeps it maintained as GitHub and Chrome change.</p>
           <div class="cta"><a class="button primary" href="https://paypal.me/jlevac84">Donate with PayPal</a><a class="button" href="https://github.com/JD2005L/GithubActionsMonitor">Star the repo</a></div>
         </div>
         <div class="band" id="more">
@@ -157,7 +157,7 @@
   </main>
 
   <footer>
-    <p>Actions Monitor by <a href="https://levac.net/">James Levac</a> · <a href="https://github.com/JD2005L/GithubActionsMonitor">Source (GPL-3.0)</a> · <a href="privacy.html">Privacy</a></p>
+    <p>Actions CI Monitor by <a href="https://levac.net/">James Levac</a> · <a href="https://github.com/JD2005L/GithubActionsMonitor">Source (GPL-3.0)</a> · <a href="privacy.html">Privacy</a></p>
     <p>More from James Levac: <a href="https://jd2005l.github.io/InboxPilot/">Inbox Pilot</a> · <a href="https://jd2005l.github.io/GitHubRepoNavigator/">Repo Navigator</a></p>
     <p>Not affiliated with or endorsed by GitHub. GitHub is a trademark of GitHub, Inc.</p>
   </footer>

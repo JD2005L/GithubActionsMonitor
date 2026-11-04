@@ -17,10 +17,10 @@ describe('badgeFor', () => {
     assert.deepEqual(plain(IconManager.badgeFor(results('red', 'red', 'yellow', 'green'), 'both')), {
       text: '2',
       color: 'red',
-      title: 'Actions Monitor: 2 repositories failing, 1 repository running',
+      title: 'Actions CI Monitor: 2 repositories failing, 1 repository running',
     });
-    assert.deepEqual(plain(IconManager.badgeFor(results('yellow', 'green'), 'both')), { text: '1', color: 'yellow', title: 'Actions Monitor: 1 repository running' });
-    assert.deepEqual(plain(IconManager.badgeFor(results('green', 'gray'), 'both')), { text: '', color: null, title: 'Actions Monitor' });
+    assert.deepEqual(plain(IconManager.badgeFor(results('yellow', 'green'), 'both')), { text: '1', color: 'yellow', title: 'Actions CI Monitor: 1 repository running' });
+    assert.deepEqual(plain(IconManager.badgeFor(results('green', 'gray'), 'both')), { text: '', color: null, title: 'Actions CI Monitor' });
   });
 
   it('"failing" shows only failures; "off" shows nothing, while the tooltip still counts', () => {
@@ -28,7 +28,7 @@ describe('badgeFor', () => {
     assert.equal(IconManager.badgeFor(results('red', 'yellow'), 'failing').text, '1');
     const off = IconManager.badgeFor(results('red'), 'off');
     assert.equal(off.text, '');
-    assert.equal(off.title, 'Actions Monitor: 1 repository failing');
+    assert.equal(off.title, 'Actions CI Monitor: 1 repository failing');
   });
 
   it('caps the number at 99+', () => {

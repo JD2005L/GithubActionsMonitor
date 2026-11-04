@@ -1,4 +1,4 @@
-// Storage manager for Actions Monitor
+// Storage manager for Actions CI Monitor
 // Handles sync vs local storage based on user preferences
 
 const StorageManager = {

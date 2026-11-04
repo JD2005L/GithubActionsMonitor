@@ -1,4 +1,4 @@
-# Actions Monitor
+# Actions CI Monitor
 
 **Your GitHub Actions status, live in the Chrome toolbar.** The extension icon turns green, yellow or red for all
 the repositories you care about, and the popup tells you which workflow failed, at which step, and why.
@@ -180,7 +180,7 @@ site/                  Project website (GitHub Pages)
 ## Contributing and support
 
 Issues and pull requests are welcome: <https://github.com/JD2005L/GithubActionsMonitor/issues>. Run `npm run check`
-before sending a change. Actions Monitor is free with nothing held back; if it saves you time, you can
+before sending a change. Actions CI Monitor is free with nothing held back; if it saves you time, you can
 [chip in toward its upkeep](https://paypal.me/jlevac84).
 
 More by the author: [Inbox Pilot](https://jd2005l.github.io/InboxPilot/) (ask ChatGPT about your Gmail) and
@@ -191,7 +191,7 @@ More by the author: [Inbox Pilot](https://jd2005l.github.io/InboxPilot/) (ask Ch
 The code is licensed under the [GNU General Public License v3.0](LICENSE): you may use, study, change and share it,
 and anything you distribute that is based on it must be released under the same license, with its source.
 
-The license covers the code, not the name. "Actions Monitor" and its status-ring icon identify the official
+The license covers the code, not the name. "Actions CI Monitor" and its status-ring icon identify the official
 release by James Levac; if you publish a fork (for example on the Chrome Web Store), give it a different name and
 icon so people can tell them apart.
 

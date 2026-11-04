@@ -253,7 +253,7 @@ test('the badge follows its setting: failing, else running; failing only; or off
     // Nothing failing: the running count, in amber.
     await expect.poll(() => badge(ext)).toBe('2');
     expect(await ext.worker.evaluate(() => chrome.action.getBadgeBackgroundColor({}))).toEqual([212, 167, 44, 255]);
-    expect(await ext.worker.evaluate(() => chrome.action.getTitle({}))).toBe('Actions Monitor: 2 repositories running');
+    expect(await ext.worker.evaluate(() => chrome.action.getTitle({}))).toBe('Actions CI Monitor: 2 repositories running');
 
     await ext.worker.evaluate(() => chrome.storage.sync.set({ badgeMode: 'failing' }));
     await expect.poll(() => badge(ext)).toBe('');
