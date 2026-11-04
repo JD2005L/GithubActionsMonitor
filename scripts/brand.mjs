@@ -1,5 +1,5 @@
 // Brand artwork shared by the extension icons, store icon, promo tile, screenshots and product page.
-// Same family as GitHub Repo Navigator: a dark rounded tile (#1f2328, corner radius 20%) carrying colored marks.
+// Same family as Repo Navigator: a dark rounded tile (#1f2328, corner radius 20%) carrying colored marks.
 
 const TILE = '#1f2328';
 const GREEN = '#3fb950';

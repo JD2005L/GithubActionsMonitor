@@ -7,9 +7,9 @@
 // Public pages on levac.net: the product page and privacy policy URLs registered with the store listing.
 const SITE = 'https://levac.net/actions-monitor/';
 
-export const PRODUCT = 'GitHub Actions Monitor';
+export const PRODUCT = 'Actions Monitor';
 
-const DESCRIPTION = `Know the moment your build breaks, without keeping a GitHub tab open. GitHub Actions Monitor turns its toolbar icon into a live status light for all the repositories you care about.
+const DESCRIPTION = `Know the moment your build breaks, without keeping a GitHub tab open. Actions Monitor turns its toolbar icon into a live status light for all the repositories you care about.
 
 AT A GLANCE
 • Green: everything passed. Yellow: something is running. Red: something failed (flashing red/green when some passed and some failed). Gray: nothing to show yet.
@@ -46,7 +46,9 @@ PRIVATE, AND READ-ONLY BY DEFAULT
 • It talks only to GitHub's API. No server, no analytics, nothing sent to the developer.
 • Your token stays on your device unless you choose to sync it.
 
-More, including setup help: ${SITE}`;
+More, including setup help: ${SITE}
+
+Actions Monitor is an independent project, not affiliated with or endorsed by GitHub, Inc. GitHub is a trademark of GitHub, Inc.`;
 
 const TEST_INSTRUCTIONS = `Uses the reviewer's own GitHub account (free works); no test account.
 1. Right-click the icon > Options. Click Next, then "Create a read-only token on GitHub". Generate it, paste it, Save Token.
@@ -69,7 +71,7 @@ export function storeListing(version) {
         { label: 'Description', required: true, kind: 'text', limit: 16000, value: DESCRIPTION },
         { label: 'Category', required: true, kind: 'choice', value: 'Developer Tools' },
         { label: 'Language', required: true, kind: 'choice', value: 'English' },
-        { label: 'Store icon', required: true, kind: 'file', files: ['images/store-icon-128.png'], note: '128×128 PNG: the extension icon (status ring on the dark tile), same family as GitHub Repo Navigator.' },
+        { label: 'Store icon', required: true, kind: 'file', files: ['images/store-icon-128.png'], note: '128×128 PNG: the extension icon (status ring on the dark tile), same family as Repo Navigator.' },
         { label: 'Global promo video', kind: 'info', value: '(leave empty)' },
         {
           label: 'Screenshots',

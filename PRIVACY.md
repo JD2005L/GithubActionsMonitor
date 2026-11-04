@@ -1,8 +1,8 @@
-# Privacy policy: GitHub Actions Monitor
+# Privacy policy: Actions Monitor
 
-*Last updated: 2026-10-23*
+*Last updated: 2026-11-04*
 
-GitHub Actions Monitor is a Chrome extension that shows the status of GitHub Actions workflow runs for
+Actions Monitor is a Chrome extension that shows the status of GitHub Actions workflow runs for
 repositories you choose: a colored toolbar icon, a popup with each workflow's latest run, and optional desktop
 notifications. This policy explains what it handles and where that data goes.
 

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "GitHub Actions Monitor",
-  "version": "3.2.0",
+  "name": "Actions Monitor",
+  "version": "3.2.1",
   "description": "Live GitHub Actions status in your toolbar: why a run failed, step-by-step progress, deploys awaiting review, and alerts.",
   "permissions": [
     "storage",

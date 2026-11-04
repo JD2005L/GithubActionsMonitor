@@ -1,15 +1,15 @@
 # Changelog
 
-All notable changes to GitHub Actions Monitor will be documented in this file.
+All notable changes to Actions Monitor will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## Current Features (v3.2.0)
+## Current Features (v3.2.1)
 
-**GitHub Actions Monitor** is a Chrome extension that provides real-time monitoring of GitHub Actions workflows across multiple repositories with intelligent status indication and adaptive polling.
+**Actions Monitor** is a Chrome extension that provides real-time monitoring of GitHub Actions workflows across multiple repositories with intelligent status indication and adaptive polling.
 
 ### Core Features
 
@@ -77,6 +77,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rate limit handling: pauses until the limit resets, and the settings page shows remaining requests
 
 ---
+
+## [3.2.1] - 2026-11-04
+
+### Changed
+- **Renamed to Actions Monitor** (was GitHub Actions Monitor). A trademark complaint to the Chrome Web Store objected to
+  "GitHub" in a sibling extension's title, so the product name no longer uses it; descriptions still say it works
+  with GitHub. The toolbar tooltip, popup, settings page, store listing, site and privacy policy use the new name, and
+  new tokens made from the settings page are named "Actions Monitor". Existing tokens, settings and storage keys are
+  unchanged.
 
 ## [3.2.0] - 2026-10-23
 

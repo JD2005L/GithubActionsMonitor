@@ -1,4 +1,4 @@
-// Popup UI controller for GitHub Actions Monitor
+// Popup UI controller for Actions Monitor
 
 let currentData = {
   repos: [],
@@ -208,12 +208,12 @@ async function keepOnTop() {
       height: Math.max(360, window.innerHeight)
     });
     const doc = pip.document;
-    doc.title = 'GitHub Actions Monitor';
+    doc.title = 'Actions Monitor';
     doc.documentElement.style.height = '100%';
     doc.body.style.cssText = 'margin:0;height:100%';
     const frame = doc.createElement('iframe');
     frame.src = chrome.runtime.getURL('popup.html?view=pip');
-    frame.title = 'GitHub Actions Monitor';
+    frame.title = 'Actions Monitor';
     frame.style.cssText = 'display:block;width:100%;height:100%;border:0';
     doc.body.appendChild(frame);
     if (VIEW === 'window' && browserWindowId !== null) {

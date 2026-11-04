@@ -1,4 +1,4 @@
-// Storage manager for GitHub Actions Monitor
+// Storage manager for Actions Monitor
 // Handles sync vs local storage based on user preferences
 
 const StorageManager = {

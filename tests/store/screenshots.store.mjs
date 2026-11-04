@@ -107,7 +107,7 @@ const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, 
  * "Workflow Failed", the repository, the workflow and state, where it failed, and the first error line).
  */
 function notificationHtml({ title, lines }) {
-  return `<div class="toast"><div class="toast-head">${brandSvg(16)}<span>GitHub Actions Monitor</span><span class="toast-x">✕</span></div>
+  return `<div class="toast"><div class="toast-head">${brandSvg(16)}<span>Actions Monitor</span><span class="toast-x">✕</span></div>
 <div class="toast-body"><div class="toast-icon">${statusSvg(44, 'red')}</div><div><div class="toast-title">${esc(title)}</div>${lines.map((l) => `<div class="toast-line">${esc(l)}</div>`).join('')}</div></div></div>`;
 }
 
@@ -151,7 +151,7 @@ li::before{content:"";position:absolute;left:2px;top:6px;width:14px;height:14px;
 .dock .page .head{height:20px;width:55%;border-radius:6px;background:#30363d;margin-bottom:6px}
 .dock .page .box{border:1px solid #30363d;border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:12px}
 </style></head><body>
-<div class="text"><div class="brand">${brandSvg(28)}GitHub Actions Monitor</div>
+<div class="text"><div class="brand">${brandSvg(28)}Actions Monitor</div>
 <h1>${esc(title)}</h1><p>${esc(body)}</p><ul>${bullets.map((b) => `<li>${esc(b)}</li>`).join('')}</ul></div>
 <div class="stage">${notification ? notificationHtml(notification) : ''}<div class="window">${strip}${docked ? `<div class="dock">${pageSkeleton()}<img src="data:image/png;base64,${image.toString('base64')}" alt=""></div>` : `<img src="data:image/png;base64,${image.toString('base64')}" alt="">`}</div></div>
 </body></html>`;

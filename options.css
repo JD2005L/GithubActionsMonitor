@@ -1,4 +1,4 @@
-/* Options page styles for GitHub Actions Monitor */
+/* Options page styles for Actions Monitor */
 
 /* Theme: GitHub's light palette by default, its dark palette when the browser or OS is in dark mode. */
 :root {
@@ -537,7 +537,7 @@ h1 { display: flex; align-items: center; gap: 12px; }
 .brand-icon { width: 36px; height: 36px; }
 h1 .subtitle { font-weight: 400; color: var(--fg-muted); }
 
-/* Tabs (the same pattern as GitHub Repo Navigator's settings) */
+/* Tabs (the same pattern as Repo Navigator's settings) */
 header {
   margin-bottom: 20px;
   padding-bottom: 0;
