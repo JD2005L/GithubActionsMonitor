@@ -4,16 +4,17 @@
 //
 // store/listing-history.json (committed) keeps one snapshot per packaged version (scripts/listing-history.mjs).
 // Packaging the same version again replaces its snapshot.
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
+import { packagedVersion } from './release-version.mjs';
 import { imageFiles, lineage, readHistory, record, snapshot, thumbnails, writeHistory } from './listing-history.mjs';
 import { PRODUCT, storeListing } from './store-listing.mjs';
 import { checkLimits, renderHtml, renderMarkdown } from './submit-page.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const { version } = JSON.parse(readFileSync(join(root, 'manifest.json'), 'utf8'));
+const version = packagedVersion(root);
 const out = join(root, 'release', `chrome-web-store-${version}`);
 const tabs = storeListing(version);
 checkLimits(tabs);

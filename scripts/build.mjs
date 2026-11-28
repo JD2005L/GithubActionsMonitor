@@ -1,9 +1,12 @@
 // Copies exactly the files the extension ships into dist/ (loaded by the browser tests), and with --store also
-// writes release/github-actions-monitor-<version>.zip for the Chrome Web Store.
+// writes release/github-actions-monitor-<version>.zip for the Chrome Web Store. The store build claims its version
+// (scripts/release-version.mjs: tools/release.py tag --push, from a clean origin/main) and stamps it into the
+// packaged manifest; nobody edits manifest.json's "version" (see changes/README.md).
 // The extension itself has no build step: these are the same files you can load unpacked from the repo root.
-import { copyFileSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
+import { copyFileSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { claimVersion, recordVersion, releaseNotes } from './release-version.mjs';
 import { zipDirectory } from './zip.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -38,8 +41,12 @@ for (const file of EXTENSION_FILES) {
 }
 
 if (process.argv.includes('--store')) {
+  const version = claimVersion(root);
   mkdirSync(join(root, 'release'), { recursive: true });
-  const zip = join(root, 'release', `github-actions-monitor-${manifest.version}.zip`);
+  recordVersion(root, version);
+  writeFileSync(join(root, 'release', 'RELEASE-NOTES.md'), `${releaseNotes(root)}\n`);
+  writeFileSync(join(outdir, 'manifest.json'), `${JSON.stringify({ ...manifest, version }, null, 2)}\n`);
+  const zip = join(root, 'release', `github-actions-monitor-${version}.zip`);
   const count = zipDirectory(outdir, zip);
   console.log(`Built Chrome Web Store package -> ${zip} (${count} files)`);
 } else {

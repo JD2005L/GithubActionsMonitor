@@ -3,21 +3,23 @@
 //     1-upload-this.zip              the package (built by `node scripts/build.mjs --store`)
 //     SUBMIT.html / SUBMIT.md        every dashboard field under its exact label, ready to paste (Copy buttons in .html),
 //                                    each marked with the release it last changed in (written last, by store-submit.mjs)
+//     RELEASE-NOTES.md               what changed since the last release (from changes/, by the store build)
 //     PRIVACY.md                     the privacy policy (also published on levac.net)
 //     images/store-icon-128.png      store icon: the extension's own 128px icon (icons/icon128.png, see scripts/icons.mjs)
 //     images/promo-tile-440x280.png  small promo tile (rendered here)
 //     images/screenshots/            five 1280x800 screenshots (sample data), made by tests/store/screenshots.store.mjs
 // Run through `npm run package`, after the store build.
-import { copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, renameSync, rmSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 import { brandSvg } from './brand.mjs';
 import { storeListing } from './store-listing.mjs';
 import { checkLimits } from './submit-page.mjs';
+import { packagedVersion } from './release-version.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const { version } = JSON.parse(readFileSync(join(root, 'manifest.json'), 'utf8'));
+const version = packagedVersion(root);
 const zip = join(root, 'release', `github-actions-monitor-${version}.zip`);
 if (!existsSync(zip)) throw new Error('Run the store build first: node scripts/build.mjs --store');
 
@@ -26,6 +28,8 @@ rmSync(out, { recursive: true, force: true });
 mkdirSync(join(out, 'images', 'screenshots'), { recursive: true });
 
 renameSync(zip, join(out, '1-upload-this.zip')); // moved, so release/ holds only this folder
+// Release notes since the last tag, compiled from changes/ by the store build (paste into the release notes, if any).
+if (existsSync(join(root, 'release', 'RELEASE-NOTES.md'))) renameSync(join(root, 'release', 'RELEASE-NOTES.md'), join(out, 'RELEASE-NOTES.md'));
 copyFileSync(join(root, 'PRIVACY.md'), join(out, 'PRIVACY.md'));
 copyFileSync(join(root, 'icons', 'icon128.png'), join(out, 'images', 'store-icon-128.png'));
 // images/screenshots/ is filled by `npm run package:screenshots` (part of `npm run package`).
