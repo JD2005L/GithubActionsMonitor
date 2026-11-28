@@ -1,0 +1,10 @@
+{
+  "base": "3.2.1",
+  "tagPrefix": "v",
+  "fragments": "changes",
+  "protect": [
+    {"path": "manifest.json", "pattern": "\"version\"\\s*:"},
+    {"path": "CHANGELOG.md"}
+  ],
+  "noRelease": ["*.md", "docs/**", "site/**", "store/**", "scripts/store-listing.mjs", "LICENSE"]
+}

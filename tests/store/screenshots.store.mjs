@@ -8,15 +8,16 @@
 //   3. deployments rolling out (step lights by job, a production deploy waiting for review, cancel)
 //   4. the moment it breaks (the desktop alert, re-run, switching off noisy workflows)
 //   5. kept in view: docked in the side panel beside the page being worked on (or popped out, or on top)
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium, expect, test } from '@playwright/test';
+import { packagedVersion } from '../../scripts/release-version.mjs';
 import { brandSvg, statusSvg } from '../../scripts/brand.mjs';
 import { launch, seed } from '../e2e/harness.mjs';
 import { MockGitHub } from '../e2e/mock-github.mjs';
 
 const root = join(import.meta.dirname, '..', '..');
-const { version } = JSON.parse(readFileSync(join(root, 'manifest.json'), 'utf8'));
+const version = packagedVersion(root);
 const OUT = join(root, 'release', `chrome-web-store-${version}`, 'images', 'screenshots');
 
 // Runs of one push share its commit, as on GitHub: the hash is derived from the commit title, so cards do not

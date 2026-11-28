@@ -154,14 +154,23 @@ npx playwright install chromium   # once, for the browser tests
 npm test              # unit tests (node --test): status logic, conditional requests, ordering
 npm run test:e2e      # browser tests: dist/ in Chromium against a mock GitHub API
 npm run check         # both
-npm run package       # Chrome Web Store folder: release/chrome-web-store-<version>/ (zip, listing, screenshots;
-                      # SUBMIT.html marks the fields changed since the version in the dashboard)
+npm run package       # Chrome Web Store folder: release/chrome-web-store-<version>/ (zip, listing, screenshots,
+                      # release notes; SUBMIT.html marks the fields changed since the version in the dashboard).
+                      # Run it on a clean, up-to-date main: it claims the version by pushing its vX.Y.Z tag.
 ```
 
 - `scripts/build.mjs` copies exactly the shipped files into `dist/` (and, with `--store`, zips them).
 - `tests/e2e/mock-github.mjs` is a small fake GitHub API (runs, jobs, logs, branches, repositories, ETags with free
   304s, rate-limit headers) that answers the service worker during browser tests. No real account is used.
 - `site/` is the project website, published to GitHub Pages by `.github/workflows/pages.yml`.
+
+### Versions and release notes
+
+Never edit the version (`manifest.json` `"version"`) or `CHANGELOG.md` in a PR: the release guard fails it.
+Add `changes/<branch-name>.md` with `bump: major|minor|patch|none` and the user-facing text. `none` is for changes
+users never see; docs, CI, website and listing-only PRs need no fragment. The store build (`npm run package`)
+assigns the version from the last tag (`python3 tools/release.py next` shows what it would be) and stamps it into
+the packaged manifest. Standard: JD2005L/ProjectWorkbench standards/release-versioning/.
 
 ```
 manifest.json          Extension manifest (MV3)
